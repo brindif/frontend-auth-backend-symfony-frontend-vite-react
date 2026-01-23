@@ -7,10 +7,10 @@ import { FiLogIn, FiUser, FiMenu, FiX } from "react-icons/fi";
 import { LogoutButton } from "./pages/auth/LogoutButton"
 import { TitlePage } from "./pages/TitlePage";
 import Router from "./Router";
+import RouterUnauthed from "./RouterUnauthed";
 import { appStyles } from "./appStyles";
 import { useAppSelector } from "./store/hooks";
 import { selectCurrentUser } from "./store/auth/selectors";
-import { LoginPage } from "./pages/auth/LoginPage";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -100,7 +100,7 @@ export default function DashboardPage() {
           </Typography>
           <Content style={ appStyles.content }>
             { user === null &&
-              <LoginPage />
+              <RouterUnauthed />
             }
             { user !== null &&
               <Router />

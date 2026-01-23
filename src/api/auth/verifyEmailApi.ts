@@ -6,8 +6,8 @@ export type VerifyEmailRequest = {
   token: string;
   id: number;
 };
-export type VerifyEmailSuccess = { message?: string };
-export type VerifyEmailError = { message: string; violations?: unknown[] };
+export type VerifyEmailSuccess = { success: boolean, message?: string };
+export type VerifyEmailError = { success: boolean, message: string; violations?: unknown[] };
 
 export async function verifyEmailRequest(
   payload: VerifyEmailRequest

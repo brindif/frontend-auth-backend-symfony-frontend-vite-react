@@ -19,9 +19,9 @@ export function VerifyEmailPage() {
     const run = async () => {
       try {
         const result = await verifyEmailRequest({
-          expires: getParams.get("expires"),
-          signature: getParams.get("signature"),
-          token: getParams.get("token"),
+          expires: getParams.get("expires") ?? "",
+          signature: getParams.get("signature") ?? "",
+          token: getParams.get("token") ?? "",
           id: Number(getParams.get("id")),
         });
         if (result.success) {
