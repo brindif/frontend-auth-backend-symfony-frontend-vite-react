@@ -12,16 +12,7 @@ export function LogoutButton({style={}}) {
 
   return <Button
     style={style}
-    onClick={() => logout(undefined, {
-      onSuccess: (data) => {
-        console.log('onSuccess', data);
-        if (data.success) {
-          message.success(t("logout.success"));
-        } else {
-          message.error(t("logout.error.request"));
-        }
-      },
-    })}
+    onClick={() => logout()}
     icon={<FiLogOut />}
   />;
 }

@@ -6,6 +6,8 @@ import { selectCurrentUser } from "../../store/auth/selectors";
 import { App } from "antd";
 import { setCurentUser } from "../../store/auth/slice";
 import { store } from "../../store/store";
+import { forgotPasswordProvider } from "../../providers/auth/forgotPasswordProvider";
+import { useForgotPassword } from "@refinedev/core";
 
 export type UpdateUserFormValues = {
   name: string;
@@ -34,6 +36,7 @@ export function ProfilePage() {
   const { message } = App.useApp();
   const t = useTranslate();
   const user = useAppSelector(selectCurrentUser);
+  const { mutate: forgotPassword } = useForgotPassword();
   
   const { mutate } = useCustomMutation();
 
@@ -82,12 +85,24 @@ export function ProfilePage() {
       </Form.Item>
 
       <Form.Item label={t("profile.email", {}, "Email")}>
-        <Button>{t("profile.email.button", {email: user?.email}, "Change email : {{email}}")}</Button>
+        <Button>
+          {t("profile.email.button", {email: user?.email}, "Change email : {{email}}")}
+        </Button>
       </Form.Item>
 
 
       <Form.Item label={t("profile.password", {}, "Password")}>
-        <Button>{t("profile.password.button", {}, "Change password")}</Button>
+        <Button onClick={() => forgotPassword({ email: user?.email }, {
+          onSuccess: (data) => {
+            if (data.success) {
+              message.success(t('forgot.password.success'), 10);
+            } else {
+              message.error(t(data?.error?.message ?? "forgot.password.error.request"), 10);
+            }
+          }
+        })}>
+          {t("profile.password.button", {}, "Change password")}
+        </Button>
       </Form.Item>
 
       <Form.Item label={t("profile.roles", {}, "Roles")}>

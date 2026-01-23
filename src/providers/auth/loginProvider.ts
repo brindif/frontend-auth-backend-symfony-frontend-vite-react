@@ -1,11 +1,11 @@
 import axios from "axios";
-
+import { AuthActionResponse } from "@refinedev/core"
 import { store } from "../../store/store";
 import { loginRequest, LoginRequest, LoginError } from "../../api/auth/loginApi";
 import { currentUserRequest, CurrentUserError } from "../../api/auth/currentUserApi";
 import { setAuthed, setCurentUser } from "../../store/auth/slice";
 
-export async function loginProvider(fields: LoginRequest) {
+export async function loginProvider(fields: LoginRequest): Promise<AuthActionResponse> {
   try {
     const data = await loginRequest(fields);
 
@@ -16,9 +16,8 @@ export async function loginProvider(fields: LoginRequest) {
       success: false,
       error: {
         name: "LoginError",
-        message: e instanceof Error ? e.message : "login.error.request",
+        message: data?.message ?? "login.error.request",
       },
-      message: {error: data?.message},
     };
   }
 
@@ -32,9 +31,8 @@ export async function loginProvider(fields: LoginRequest) {
       success: false,
       error: {
         name: "CurrentUserError",
-        message: e instanceof Error ? e.message : "login.error.request.me",
+        message: data?.message ?? "login.error.request.me",
       },
-      message: {error: data?.message},
     };
   }
 

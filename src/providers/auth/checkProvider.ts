@@ -3,11 +3,12 @@ import { selectAuthed } from "../../store/auth/selectors";
 import { refreshTokenRequest, RefreshTokenError } from "../../api/auth/refreshTokenApi";
 import { currentUserRequest, CurrentUserError } from "../../api/auth/currentUserApi";
 import { setAuthed, setCurentUser } from "../../store/auth/slice";
+import { CheckResponse } from "@refinedev/core"
 
-export async function checkProvider() {
+export async function checkProvider(): Promise<CheckResponse> {
   const token = selectAuthed(store.getState());
   if (token) {
-    return { success: true };
+    return { authenticated: true };
   }
   //Refresh token if BEARER token is expired
   try {
@@ -17,7 +18,7 @@ export async function checkProvider() {
   } catch (e) {
     //Return false and redirect to login if token cann't be refresh
     return {
-      success: false,
+      authenticated: false,
       redirectTo: "/login",
     };
   }
@@ -29,8 +30,9 @@ export async function checkProvider() {
   } catch (e) {
     //Return false and redirect to login
     return {
-      success: false,
+      authenticated: false,
       redirectTo: "/login",
     };
   }
+  return { authenticated: true };
 };

@@ -27,10 +27,10 @@ export function VerifyEmailPage() {
         if (result.success) {
           message.success(t("verify.email.success"), 10);
         } else {
-          message.success(t("verify.email.error.request"), 10);
+          message.error(t(result?.message ?? "verify.email.error.request"), 10);
         }
-      } catch(e: unknown) {
-        message.error(t(e.message?.error ?? "verify.email.error.request"), 10);
+      } catch(e) {
+        message.error(t("verify.email.error.request"), 10);
       }
     };
 

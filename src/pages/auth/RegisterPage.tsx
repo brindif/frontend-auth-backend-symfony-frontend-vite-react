@@ -15,7 +15,7 @@ export function RegisterPage() {
         if (data.success) {
           message.success(t('register.verify.email'), 10);
         } else {
-          message.error(t(data.message?.error ?? "register.error.request"), 10);
+          message.error(t(data?.error?.message ?? "register.error.request"), 10);
         }
       },
     });

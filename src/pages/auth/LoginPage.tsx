@@ -16,7 +16,7 @@ export function LoginPage() {
         if (data.success) {
           message.success(t('login.success'), 10);
         } else {
-          message.error(t(data.message?.error ?? "login.error.request"), 10);
+          message.error(t(data?.error?.message ?? "login.error.request"), 10);
         }
       },
     });
