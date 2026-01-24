@@ -5,8 +5,8 @@ import { registerProvider } from "./registerProvider";
 import { logoutProvider } from "./logoutProvider";
 import { checkProvider } from "./checkProvider";
 import { onErrorProvider } from "./onErrorProvider";
-import { forgotPasswordProvider } from "./forgotPasswordProvider";
-import { updatePasswordProvider } from "./updatePasswordProvider";
+import { updateRequestProvider } from "./updateRequestProvider";
+import { updateWithTokenProvider } from "./updateWithTokenProvider";
 
 
 export const authProvider: AuthProvider = {
@@ -15,6 +15,6 @@ export const authProvider: AuthProvider = {
   logout: logoutProvider,
   check: checkProvider,
   onError: onErrorProvider,
-  forgotPassword: forgotPasswordProvider,
-  updatePassword: updatePasswordProvider,
+  forgotPassword: updateRequestProvider,
+  updatePassword: updateWithTokenProvider,
 };

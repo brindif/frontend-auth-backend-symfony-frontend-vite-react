@@ -2,16 +2,19 @@ import { AuthPage } from "@refinedev/antd";
 import { useTranslate } from "@refinedev/core";
 import { useForgotPassword } from "@refinedev/core";
 import { App } from "antd";
-import { ForgotPasswordRequest } from "../../api/auth/forgotPasswordApi";
+import { UpdateRequestRequest, TYPE_PASSWORD } from "../../api/auth/updateRequestApi";
 
 export function ForgotPasswordPage() {
 
   const t = useTranslate();
-  const { mutate: forgotPassword } = useForgotPassword();
+  const { mutate: updateRequest } = useForgotPassword();
   const { message } = App.useApp();
 
-  const onFinish = (values: ForgotPasswordRequest) => {
-    forgotPassword(values, {
+  const onFinish = (values: UpdateRequestRequest) => {
+    updateRequest({
+      type: TYPE_PASSWORD,
+      email: values.email,
+    }, {
       onSuccess: (data) => {
         if (data.success) {
           message.success(t('forgot.password.success'), 10);

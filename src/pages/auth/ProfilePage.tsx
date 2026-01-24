@@ -1,13 +1,13 @@
 import { Typography, theme } from "antd";
 import { Button, Form, Input, Space, Tag } from "antd";
-import { useTranslate, useCustomMutation, useApiUrl } from "@refinedev/core";
+import { useTranslate, useCustomMutation } from "@refinedev/core";
 import { useAppSelector } from "../../store/hooks";
 import { selectCurrentUser } from "../../store/auth/selectors";
 import { App } from "antd";
 import { setCurentUser } from "../../store/auth/slice";
 import { store } from "../../store/store";
-import { forgotPasswordProvider } from "../../providers/auth/forgotPasswordProvider";
 import { useForgotPassword } from "@refinedev/core";
+import { TYPE_PASSWORD, TYPE_EMAIL } from "../../api/auth/updateRequestApi";
 
 export type UpdateUserFormValues = {
   name: string;
@@ -36,7 +36,7 @@ export function ProfilePage() {
   const { message } = App.useApp();
   const t = useTranslate();
   const user = useAppSelector(selectCurrentUser);
-  const { mutate: forgotPassword } = useForgotPassword();
+  const { mutate: updateRequestProvider } = useForgotPassword();
   
   const { mutate } = useCustomMutation();
 
@@ -85,19 +85,33 @@ export function ProfilePage() {
       </Form.Item>
 
       <Form.Item label={t("profile.email", {}, "Email")}>
-        <Button>
+        <Button onClick={() => updateRequestProvider({
+            email: user?.email,
+            type: TYPE_EMAIL,
+          }, {
+          onSuccess: (data) => {
+            if (data.success) {
+              message.success(t('update.request.success'), 10);
+            } else {
+              message.error(t(data?.error?.message ?? "update.request.error.request"), 10);
+            }
+          }
+        })}>
           {t("profile.email.button", {email: user?.email}, "Change email : {{email}}")}
         </Button>
       </Form.Item>
 
 
       <Form.Item label={t("profile.password", {}, "Password")}>
-        <Button onClick={() => forgotPassword({ email: user?.email }, {
+        <Button onClick={() => updateRequestProvider({
+            email: user?.email,
+            type: TYPE_PASSWORD,
+          }, {
           onSuccess: (data) => {
             if (data.success) {
-              message.success(t('forgot.password.success'), 10);
+              message.success(t('update.request.success'), 10);
             } else {
-              message.error(t(data?.error?.message ?? "forgot.password.error.request"), 10);
+              message.error(t(data?.error?.message ?? "update.request.error.request"), 10);
             }
           }
         })}>

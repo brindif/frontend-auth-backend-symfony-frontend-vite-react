@@ -2,17 +2,19 @@ import { Routes, Route } from "react-router-dom";
 
 import { UpdatePasswordPage } from "./pages/auth/UpdatePasswordPage";
 import { VerifyEmailPage } from "./pages/auth/VerifyEmailPage";
-import { CheckEmailPage } from "./pages/auth/CheckEmailPage";
+import { UpdateEmailPage } from "./pages/auth/UpdateEmailPage";
+import { ValidateUpdateEmailPage } from "./pages/auth/ValidateUpdateEmailPage";
 import { DashboardPage } from "./pages/DashboardPage";
-import { ProfilePage } from "./pages/auth/Profile";
+import { ProfilePage } from "./pages/auth/ProfilePage";
 
 export default function Router() {
   return (
     <Routes>
       <Route path="/account" element={<ProfilePage />} />
       <Route path="/update-password" element={<UpdatePasswordPage />} />
-      <Route path="/check-email" element={<CheckEmailPage />} />
+      <Route path="/validate-update-email" element={<ValidateUpdateEmailPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
+      <Route path="/update-email" element={<UpdateEmailPage />} />
       <Route path="/" element={<DashboardPage />} />
     </Routes>
   );
