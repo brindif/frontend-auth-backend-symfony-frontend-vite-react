@@ -17,9 +17,9 @@ export function ForgotPasswordPage() {
     }, {
       onSuccess: (data) => {
         if (data.success) {
-          message.success(t('forgot.password.success'), 10);
+          message.success(t('update.request.success'), 10);
         } else {
-          message.error(t(data?.error?.message ?? "forgot.password.error.request"), 10);
+          message.error(t(data?.error?.message ?? "update.request.error.request"), 10);
         }
       },
     });

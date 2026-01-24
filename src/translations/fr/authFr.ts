@@ -38,6 +38,11 @@ export const authFr = {
   "profile.roles.ROLE_USER": "Utilisateur",
   "profile.roles.ROLE_ADMIN": "Administrateur",
   "profile.update": "Modifier",
+  //Update Email
+  "update.email.title": "Modifier l'adresse mail",
+  "update.email.label": "E-mail",
+  "update.email.error.type": "Format invalide.",
+  "update.email.button": "Modifier",
 
   //Request register message
   "register.error.request": "Requête incorrecte.",
@@ -67,4 +72,28 @@ export const authFr = {
   "profile.error.request": "Requête incorrecte.",
   "profile.error.no.user": "Utilisateur inconnu.",
   "profile.success": "Nom d'utilisateur modifié.",
+
+  //Request update request message
+  "update.request.success": "Un mail de confirmation a été envoyé.",
+  "update.request.error.request": "Requête incorrecte.",
+  "update.request.error.unknow.user": "Utilisateur inconnu.",
+  "update.request.error.reset.token": "Vous avez déjà envoyé un mail pour changer vos informations de connexion.",
+  "update.request.error.token.undefined": "Erreur lors de la requête.",
+  "update.request.error.send.mail": "Le mail n'a pas pu être envoyé.",
+
+  //Request update with token message
+  "update.email.success": "Un mail de confirmation a été envoyé à votre nouvelle adresse.",
+  "update.email.error.request": "Requête incorrecte.",
+  "update.password.success": "Votre mot de passe a bien été mis à jour.",
+  "update.password.error.request": "Requête incorrecte.",
+  "update.with.token.error.request": "Requête incorrecte.",
+  "update.with.token.error.invalid.token": "Votre token est incorrect.",
+  "update.with.token.error.unknow.token": "Votre token est incorrect.",
+  "update.with.token.error.unknow": "Erreur lors de la requête.",
+  "update.with.token.error.send.mail": "Le mail n'a pas pu être envoyé.",
+  "update.with.token.check.email": "Un mail de confirmation a été envoyé à votre nouvelle adresse.",
+
+  //Request validate update password message
+  "validate.update.email.success": "Votre nouvelle adresse mail a bien été enregistrée.",
+  "validate.update.email.error.request": "Requête incorrecte.",
 };
