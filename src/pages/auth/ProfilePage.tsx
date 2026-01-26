@@ -17,20 +17,6 @@ export function ProfilePage() {
   const MIN_NAME = 2;
   const MAX_NAME = 100;
 
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
-
-  const styles: Record<string, React.CSSProperties> = {
-    content: {
-      padding: 24,
-      margin: 0,
-      background: colorBgContainer,
-      borderRadius: borderRadiusLG,
-      minHeight: '100dvh',
-    },
-  };
-
   const [form] = Form.useForm<UpdateUserFormValues>();
 
   const { message } = App.useApp();
@@ -63,7 +49,7 @@ export function ProfilePage() {
   
   return (
     <Form
-      style={ styles.content }
+      className='content'
       form={form}
       layout="vertical"
       initialValues={{
@@ -121,7 +107,7 @@ export function ProfilePage() {
 
       <Form.Item label={t("profile.roles", {}, "Roles")}>
         <Space wrap>
-        { Array.isArray(user?.roles) && user.roles.map(role => (
+        { Array.isArray(user?.roles) && user.roles.map((role: any) => (
           <Tag key={role} color="blue">
             {t(`profile.roles.${role}`, {}, role)}
           </Tag>

@@ -36,10 +36,6 @@ export function UpdateEmailPage() {
   };
 
   const onFinish = (values: UpdateWithTokenRequest) => {
-    console.log({
-      token: getParams.get("token") ?? "",
-      email: values['email'] ?? ""
-    });
     updateWithToken({
       token: getParams.get("token") ?? "",
       email: values['email'] ?? ""

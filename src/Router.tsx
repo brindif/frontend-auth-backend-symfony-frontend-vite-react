@@ -6,6 +6,7 @@ import { UpdateEmailPage } from "./pages/auth/UpdateEmailPage";
 import { ValidateUpdateEmailPage } from "./pages/auth/ValidateUpdateEmailPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ProfilePage } from "./pages/auth/ProfilePage";
+import { TabPage } from "./pages/admin/TabPage";
 
 export default function Router() {
   return (
@@ -15,6 +16,7 @@ export default function Router() {
       <Route path="/validate-update-email" element={<ValidateUpdateEmailPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
       <Route path="/update-email" element={<UpdateEmailPage />} />
+      <Route path="/admin/tab" element={<TabPage />} />
       <Route path="/" element={<DashboardPage />} />
     </Routes>
   );

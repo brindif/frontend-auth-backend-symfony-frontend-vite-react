@@ -11,6 +11,7 @@ import RouterUnauthed from "./RouterUnauthed";
 import { appStyles } from "./appStyles";
 import { useAppSelector } from "./store/hooks";
 import { selectCurrentUser } from "./store/auth/selectors";
+import "./app.css";
 
 const { Header, Content, Footer, Sider } = Layout;
 

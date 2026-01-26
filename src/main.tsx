@@ -1,4 +1,3 @@
-import "@ant-design/v5-patch-for-react-19";
 import { Refine } from "@refinedev/core";
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -23,6 +22,7 @@ createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <ConfigProvider theme={{
           algorithm: [darkAlgorithm, compactAlgorithm],
+          cssVar: { key: 'app' }
         }}>
           <AntdApp>
             <Refine

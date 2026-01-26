@@ -1,0 +1,7 @@
+form.content {
+  padding: 24px;
+  margin: 0;
+  background: var(--ant-color-bg-container);
+  border-radius: var(--ant-border-radius);
+  min-height: 100dvh;
+};
