@@ -2,62 +2,36 @@ import { useState } from 'react';
 import { useTranslate } from "@refinedev/core";
 import { Link } from "react-router-dom";
 import { Button, Breadcrumb, Layout, Menu, Typography, Tooltip } from "antd";
-import { FaRegCalendarAlt, FaIdCard } from "react-icons/fa";
 import { FiLogIn, FiUser, FiMenu, FiX } from "react-icons/fi";
+import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import { LogoutButton } from "./pages/auth/LogoutButton"
-import { TitlePage } from "./pages/TitlePage";
+import { Title } from "./components/Title";
 import Router from "./Router";
 import RouterUnauthed from "./RouterUnauthed";
 import { appStyles } from "./appStyles";
 import { useAppSelector } from "./store/hooks";
 import { selectCurrentUser } from "./store/auth/selectors";
+import { MenuApp } from "./components/MenuApp";
+import { selectCurrentTabs } from "./store/form/selectors";
 import "./app.css";
 
 const { Header, Content, Footer, Sider } = Layout;
-
-const menu = [
-  { key: "nephilim", label: <Link to="/nephilim">Nephilim</Link> },
-  { key: "gameofthrone", label: <Link to="/gameofthrone">Trône de Fer</Link> },
-];
-
-const submenu = [
-  {
-    key: "sheet",
-    icon: <FaIdCard />,
-    label: "Fiches",
-    children: [
-      { key: "sheet1", label: <Link to="/nephilim/sheet1">Aërîn</Link> },
-      { key: "sheet2", label: <Link to="/nephilim/sheet2">Sitala</Link> },
-    ],
-  },
-  {
-    key: "note",
-    icon: <FaRegCalendarAlt />,
-    label: "Notes",
-    children: [
-      { key: "calendar", label: "Calendrier" },
-      { key: "knowledge", label: "Connaissances" },
-    ],
-  },
-];
 
 export default function DashboardPage() {
 
   const user = useAppSelector(selectCurrentUser);
   const [collapsed, setCollapsed] = useState(false);
   const t = useTranslate();
+  const selectedTabs = useAppSelector(selectCurrentTabs);
 
   return (
     <Layout style={ appStyles.app }>
       <Header style={ appStyles.header }>
         <Link to="/">
-          <TitlePage level={3}/>
+          <Title level={3}/>
         </Link>
-        <Menu
-          theme="dark"
+        <MenuApp
           mode="horizontal"
-          defaultSelectedKeys={['nephilim']}
-          items={ menu }
           style={ appStyles.menu }
         />
         { user === null &&
@@ -82,12 +56,9 @@ export default function DashboardPage() {
       </Header>
       <Layout style={ appStyles.body }>
         <Sider style={ appStyles.sider }  trigger={null} collapsible collapsed={collapsed}>
-          <Menu
+          <MenuApp
             mode="inline"
-            defaultSelectedKeys={['sheet1']}
-            defaultOpenKeys={['sheet']}
             style={ appStyles.submenu }
-            items={ submenu }
           />
         </Sider>
         <Layout style={ appStyles.page }>
@@ -97,7 +68,7 @@ export default function DashboardPage() {
               icon={collapsed ? <FiMenu /> : <FiX />}
               onClick={() => setCollapsed(!collapsed)}
             />
-            <Breadcrumb style={ appStyles.breadcrumb } items={[{ title: 'Nephilim' }, { title: 'Fiches' }, { title: 'Aërîn' }]} />
+            <Breadcrumb style={ appStyles.breadcrumb } items={selectedTabs.map(tab => ({title: tab.name}))} />
           </Typography>
           <Content style={ appStyles.content }>
             { user === null &&
