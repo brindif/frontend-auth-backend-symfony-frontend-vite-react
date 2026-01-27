@@ -57,7 +57,7 @@ export function ProfilePage() {
       }}
       onFinish={(values) => onFinish(values)}
     >
-      <Typography.Title level={4}>{ t('profile.title', {}, 'User Profile') }</Typography.Title>
+      <Typography.Title level={3}>{ t('profile.title', {}, 'User Profile') }</Typography.Title>
       <Form.Item
         label={t("profile.name", {}, "Name")}
         name="name"

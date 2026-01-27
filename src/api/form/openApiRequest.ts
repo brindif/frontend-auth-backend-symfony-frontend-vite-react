@@ -1,5 +1,5 @@
 import { api } from "../axiosApi";
-import { OpenApiType } from "../../store/admin/slice";
+import  type { OpenApi as OpenApiType } from "../../store/form/slice";
 
 export type OpenApiError = {
   success: boolean;

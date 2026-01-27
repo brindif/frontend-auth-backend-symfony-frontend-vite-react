@@ -28,10 +28,6 @@ export function UpdateEmailPage() {
     },
     title: {
       textAlign: 'center',
-      fontSize: '24px',
-      lineHeight: '32px',
-      marginBottom:"32px",
-      color: colorPrimaryTextHover,
     }
   };
 
@@ -60,7 +56,7 @@ export function UpdateEmailPage() {
       }}
       onFinish={(values) => onFinish(values)}
     >
-      <Typography.Title style={ styles.title } level={3}>{ t('update.email.title', {}, 'Update email') }</Typography.Title>
+      <Typography.Title level={3}>{ t('update.email.title', {}, 'Update email') }</Typography.Title>
       <Form.Item
         label={t("update.email.label", {}, "Email")}
         name="email"

@@ -1,7 +1,7 @@
 import { App } from "antd";
 import { useTranslate } from "@refinedev/core";
 import { useSearchParams } from "react-router-dom";
-import { useUpdatePassword, useLogout } from "@refinedev/core";
+import { useUpdatePassword } from "@refinedev/core";
 import { ProfilePage } from "./ProfilePage";
 import { useEffect, useRef } from "react";
 
@@ -11,7 +11,6 @@ export function ValidateUpdateEmailPage() {
   const [getParams] = useSearchParams();
   const { message } = App.useApp();
   const { mutate: updateWithToken } = useUpdatePassword();
-  const { mutate: logout } = useLogout();
 
   const calledRef = useRef(false);
 

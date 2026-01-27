@@ -1,12 +1,13 @@
 import { store } from "../../store/store";
 import { selectAuthed, selectCurrentUser } from "../../store/auth/selectors";
-import { refreshTokenRequest, RefreshTokenError } from "../../api/auth/refreshTokenApi";
-import { currentUserRequest, CurrentUserError } from "../../api/auth/currentUserApi";
+import { refreshTokenRequest } from "../../api/auth/refreshTokenApi";
+import { currentUserRequest } from "../../api/auth/currentUserApi";
 import { setAuthed, setCurentUser } from "../../store/auth/slice";
 import { CheckResponse } from "@refinedev/core"
-import { setOpenApi } from "../../store/admin/slice";
-import { openApiRequest, OpenApiError } from "../../api/admin/openApiRequest";
-import { selectOpenApi } from "../../store/admin/selectors";
+import { setOpenApi, setTabs, setCurrentTabs, Tab } from "../../store/form/slice";
+import { selectOpenApi, selectTabs } from "../../store/form/selectors";
+import { tabsRequest } from "../../api/form/tabsRequest";
+import { openApiRequest } from "../../api/form/openApiRequest";
 
 export async function checkProvider(): Promise<CheckResponse> {
   const token = selectAuthed(store.getState());
@@ -46,6 +47,24 @@ export async function checkProvider(): Promise<CheckResponse> {
     try {
       const data = await openApiRequest();
       store.dispatch(setOpenApi(data));
+    } catch (e) {
+      //Return false and redirect to login
+      return {
+        authenticated: false,
+        redirectTo: "/login",
+      };
+    }
+  }
+  //Load tabs after successful authentication
+  const tabs = selectTabs(store.getState());
+  if (!tabs) {
+    try {
+      const data = await tabsRequest();
+      store.dispatch(setTabs(data));
+      // TODO : get first tab from data or from route
+      if (data.length > 0) {
+        store.dispatch(setCurrentTabs(data.find((tab) => !tab.parent) ?? null));
+      }
     } catch (e) {
       //Return false and redirect to login
       return {
