@@ -37,10 +37,14 @@ const initialState: FormState = {
 function getChildren(parent: Tab, tabs: Tab[]): Tab[] {
   return tabs
     .filter((tab) => tab.parent === parent['@id'])
-    .map((tab) => ({
-      ...tab,
-      children: getChildren(tab, tabs),
-    }));
+    .map((tab) => {
+      tab.route = `${parent.route}/${tab.route}`;
+      return {
+        ...tab,
+        children: getChildren(tab, tabs),
+      }
+    })
+    .sort((a, b) => a.position - b.position);
 };
 
 const formSlice = createSlice({
@@ -52,7 +56,7 @@ const formSlice = createSlice({
       state.tree = action.payload.filter((tab) => !tab.parent).map((tab) => ({
         ...tab,
         children: getChildren(tab, action.payload),
-      }));
+      })).sort((a, b) => a.position - b.position);
     },
     clearTabs: (state) => {
       state.tabs = [];

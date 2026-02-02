@@ -7,24 +7,36 @@ import { FormItemsFromSchema } from "../../components/form/FormItemsFromSchema";
 import { useDispatch } from "react-redux";
 import { setTabs } from "../../store/form/slice";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function TabCreatePage () {
-  const t = useTranslate();
-  const dispatch = useDispatch();
-  const { message } = App.useApp();
-  
-  const { mutate: postQuery } = useCustomMutation();
+  // Initialize form field
   const fullSchema = useAppSelector((state: RootState) => selectSchema(state, '/api/tab', 'post'));
 
+  // Change tabs list in redux
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [shouldRefetchTabs, setShouldRefetchTabs] = useState(false);
-  const { query: queryTabs } = useCustom({ url: '/tabs', method: "get", queryOptions: { enabled: shouldRefetchTabs } });
+  const { query: queryTabs } = useCustom({
+    url: '/tabs',
+    method: "get",
+    queryOptions: {
+      enabled: shouldRefetchTabs,
+      refetchOnMount: false,
+    }
+  });
   useEffect(() => {
-    if (queryTabs.isSuccess && queryTabs.data?.data?.member) {
+    if (shouldRefetchTabs && queryTabs.isSuccess && queryTabs.data?.data?.member) {
       dispatch(setTabs(queryTabs.data.data.member));
       setShouldRefetchTabs(false);
+      navigate('/');
     }
-  }, [queryTabs.isSuccess, queryTabs.data, dispatch]);
+  }, [queryTabs.isSuccess, queryTabs.data, shouldRefetchTabs]);
 
+  // Validate form
+  const t = useTranslate();
+  const { message } = App.useApp();
+  const { mutate: postQuery } = useCustomMutation();
   const onFinish = ({ formData }: any) => {
     postQuery({
       url: '/tab',

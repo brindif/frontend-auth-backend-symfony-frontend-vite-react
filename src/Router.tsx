@@ -8,8 +8,10 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { ProfilePage } from "./pages/auth/ProfilePage";
 import { TabCreatePage } from "./pages/form/TabCreatePage";
 import { TabEditPage } from "./pages/form/TabEditPage";
+import { useLocation } from "react-router-dom";
 
 export default function Router() {
+  const location = useLocation();
   return (
     <Routes>
       <Route path="/account" element={<ProfilePage />} />
@@ -18,7 +20,7 @@ export default function Router() {
       <Route path="/verify-email" element={<VerifyEmailPage />} />
       <Route path="/update-email" element={<UpdateEmailPage />} />
       <Route path="/form/tab" element={<TabCreatePage />} />
-      <Route path="/form/tab/:id" element={<TabEditPage />} />
+      <Route path="/form/tab/:id" element={<TabEditPage key={location.pathname} />} />
       <Route path="/" element={<DashboardPage />} />
     </Routes>
   );

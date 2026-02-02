@@ -12,14 +12,9 @@ import { setTabs } from "../../store/form/slice";
 
 export function TabEditPage () {
   const { id } = useParams();
-  const tab = useAppSelector(state => selectTab(state, id));
-  const t = useTranslate();
-  const dispatch = useDispatch();
-  const { message } = App.useApp();
   
-  const { mutate: postQuery } = useCustomMutation();
+  // Initialize form field
   const fullSchema = useAppSelector((state: RootState) => selectSchema(state, '/api/tab/{id}', 'put'));
-
   const [form] = Form.useForm();
   const content = fullSchema ? (
     <FormItemsFromSchema 
@@ -28,20 +23,41 @@ export function TabEditPage () {
     />
   ) : null;
 
+  // Initialize form values
+  const [isTabLoaded, setIsTabLoaded] = useState(false);
+  let tab = undefined;
+  const { query: queryTab } = useCustom({
+    url: `/tab/${id}`,
+    method: "get",
+    queryOptions: { enabled: !isTabLoaded, refetchOnMount: false }
+  });
   useEffect(() => {
-    if (!tab || !content) return;
-    form.setFieldsValue(tab);
-  }, [form, content, tab]);
+    if (!isTabLoaded && queryTab.isSuccess && Number(id) === Number(queryTab.data?.data?.id)) {
+      setIsTabLoaded(true);
+      tab = queryTab.data?.data;
+      form.setFieldsValue(tab);
+    }
+  }, [isTabLoaded, queryTab, id]);
 
+  // Change tabs list in redux
+  const dispatch = useDispatch();
   const [shouldRefetchTabs, setShouldRefetchTabs] = useState(false);
-  const { query: queryTabs } = useCustom({ url: '/tabs', method: "get", queryOptions: { enabled: shouldRefetchTabs } });
+  const { query: queryTabs } = useCustom({
+    url: '/tabs',
+    method: "get",
+    queryOptions: { enabled: shouldRefetchTabs, refetchOnMount: false }
+  });
   useEffect(() => {
-    if (queryTabs.isSuccess && queryTabs.data?.data?.member) {
+    if (shouldRefetchTabs && queryTabs.isSuccess && queryTabs.data?.data?.member) {
       dispatch(setTabs(queryTabs.data.data.member));
       setShouldRefetchTabs(false);
     }
-  }, [queryTabs.isSuccess, queryTabs.data, dispatch]);
+  }, [queryTabs.isSuccess, queryTabs.data, dispatch, shouldRefetchTabs]);
 
+  // Validate form
+  const t = useTranslate();
+  const { message } = App.useApp();
+  const { mutate: postQuery } = useCustomMutation();
   const onFinish = ({ formData }: any) => {
     postQuery({
       url: `/tab/${id}`,
@@ -66,7 +82,6 @@ export function TabEditPage () {
       layout="vertical">
       <Typography.Title level={3}>
         { t("admin.tab.title", {}, "Edit Tab") }
-        { tab && ' '+t(tab?.name, {}, tab?.defaultName) }
       </Typography.Title>
 
       { content }

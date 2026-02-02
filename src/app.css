@@ -17,3 +17,7 @@ form.content h3 {
 ul.ant-menu button {
   margin-left: 5%;
 }
+
+ul.ant-menu .sub-menu {
+  color: var(--ant-color-text-description);
+}
