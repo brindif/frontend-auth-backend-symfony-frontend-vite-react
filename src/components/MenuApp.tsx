@@ -1,6 +1,6 @@
 import { useTranslate } from "@refinedev/core";
 import { useAppSelector } from "./../store/hooks";
-import { selectCurrentTabs, selectTabs, selectTree } from "./../store/form/selectors";
+import { selectCurrentTabs, selectTabs, selectTree } from "./../store/tab/selectors";
 import { useNavigate } from "react-router-dom";
 import { Button, Menu, MenuProps, Typography } from "antd";
 import {
@@ -11,7 +11,7 @@ import {
   FormOutlined,
   ArrowRightOutlined
 } from "@ant-design/icons";
-import { setCurrentTabs, Tab } from "../store/form/slice";
+import { setCurrentTabs, Tab } from "../store/tab/slice";
 import { useDispatch } from "react-redux";
 import type { CSSProperties } from "react";
 import { useMemo, useState } from "react";

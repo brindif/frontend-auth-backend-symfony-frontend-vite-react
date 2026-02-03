@@ -1,10 +1,9 @@
- export type XList = {
+export type XList = {
   route: string;
   label: string;
   labelDefault?: string;
   identifier: string;
 };
-
 export type OpenApiElement =  {
   type: string[] | string;
   // Common fields
@@ -14,6 +13,7 @@ export type OpenApiElement =  {
   // Enum
   enum?: Array<string | number | boolean | null>;
   "x-list"?: XList;
+  "x-join"?: ObjectSchema;
   // Numeric
   minimum?: number;
   maximum?: number;
@@ -30,7 +30,7 @@ export type OpenApiElement =  {
 };
 
 export type ObjectSchema = {
-  type: string;
+  type?: string;
   required?: string[];
   properties: Record<string, OpenApiElement>;
 };

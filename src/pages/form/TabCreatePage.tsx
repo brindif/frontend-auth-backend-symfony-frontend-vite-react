@@ -1,11 +1,11 @@
 import { useCustom, useTranslate, useCustomMutation } from "@refinedev/core";
-import { selectSchema } from '../../store/form/selectors';
+import { selectSchema } from '../../store/tab/selectors';
 import { useAppSelector } from "../../store/hooks";
 import type { RootState } from "../../store/store";
 import { App, Form, Typography, Button } from "antd";
 import { FormItemsFromSchema } from "../../components/form/FormItemsFromSchema";
 import { useDispatch } from "react-redux";
-import { setTabs } from "../../store/form/slice";
+import { setTabs } from "../../store/tab/slice";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 

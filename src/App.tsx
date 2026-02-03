@@ -12,7 +12,7 @@ import { appStyles } from "./appStyles";
 import { useAppSelector } from "./store/hooks";
 import { selectCurrentUser } from "./store/auth/selectors";
 import { MenuApp } from "./components/MenuApp";
-import { selectCurrentTabs } from "./store/form/selectors";
+import { selectCurrentTabs } from "./store/tab/selectors";
 import "./app.css";
 
 const { Header, Content, Footer, Sider } = Layout;

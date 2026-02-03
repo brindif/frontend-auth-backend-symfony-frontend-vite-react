@@ -4,8 +4,15 @@ import { ObjectSchema } from "../../utils/form/openApiTypes";
 import { extractFormat } from "../../utils/form/openApiFormat";
 import { extractRules } from "../../utils/form/openApiRules";
 import { XListSelect } from "./XListSelect";
+import { XJoinList } from "./XJoinList";
 
-export function FormItemsFromSchema({ schema, form }: { schema: ObjectSchema; form?: string }) {
+type FormItemsFromSchemaType = {
+  schema: ObjectSchema;
+  form?: string,
+  joinList?: string;
+}
+
+export function FormItemsFromSchema({ schema, form, joinList}: FormItemsFromSchemaType) {
   const t = useTranslate();
   return (
     <>
@@ -26,22 +33,30 @@ export function FormItemsFromSchema({ schema, form }: { schema: ObjectSchema; fo
               value: t(`form.${form ?? "form"}.${String(value)}`, {}, String(value)),
             }))} />
             break;
-          case "iri-reference":
-          if(fieldSchema["x-list"]) {
-            const { route, label, identifier } = fieldSchema["x-list"];
-            if (typeof route === "string" && typeof label === "string" && typeof identifier === "string") {
-              input = <XListSelect xList={fieldSchema["x-list"]} />;
-              break;
+          case "join-list":
+            if(fieldSchema["x-join"]) {
+              const { properties, type, required } = fieldSchema["x-join"];
+              if (typeof properties === "object" && typeof type === "string" && typeof required === "object") {
+                input=<XJoinList schema={fieldSchema["x-join"]} form={form} field={field} />
+              }
             }
-          }
+            break;
+          case "iri-reference":
+            if(fieldSchema["x-list"]) {
+              const { route, label, identifier } = fieldSchema["x-list"];
+              if (typeof route === "string" && typeof label === "string" && typeof identifier === "string") {
+                input = <XListSelect xList={fieldSchema["x-list"]} />;
+                break;
+              }
+            }
           case "string":
             input=<Input placeholder={fieldSchema.example ?? undefined} />
             break;
         }
         return (
           <Form.Item
-            key={field}
-            name={field}
+            key={joinList ? `${joinList}[${field}]` : field}
+            name={joinList ? `${joinList}[${field}]` : field}
             label={t(`form.${form ?? "form"}.${field}`, {}, field)}
             rules={extractRules(schema, field, t)}
             valuePropName={extractFormat(fieldSchema) === "boolean" ? "checked" : undefined} 

@@ -4,8 +4,8 @@ import { refreshTokenRequest } from "../../api/auth/refreshTokenApi";
 import { currentUserRequest } from "../../api/auth/currentUserApi";
 import { setAuthed, setCurentUser } from "../../store/auth/slice";
 import { CheckResponse } from "@refinedev/core"
-import { setOpenApi, setTabs, setCurrentTabs, Tab } from "../../store/form/slice";
-import { selectOpenApi, selectTabs } from "../../store/form/selectors";
+import { setOpenApi, setTabs, setCurrentTabs, Tab } from "../../store/tab/slice";
+import { selectOpenApi, selectTabs } from "../../store/tab/selectors";
 import { tabsRequest } from "../../api/form/tabsRequest";
 import { openApiRequest } from "../../api/form/openApiRequest";
 

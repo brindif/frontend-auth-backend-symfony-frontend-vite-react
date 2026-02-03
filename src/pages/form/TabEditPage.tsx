@@ -1,14 +1,14 @@
 import { useCustom, useTranslate, useCustomMutation } from "@refinedev/core";
-import { selectSchema } from '../../store/form/selectors';
+import { selectSchema } from '../../store/tab/selectors';
 import { useAppSelector } from "../../store/hooks";
 import type { RootState } from "../../store/store";
 import { App, Form, Typography, Button } from "antd";
 import { FormItemsFromSchema } from "../../components/form/FormItemsFromSchema";
 import { useParams } from "react-router-dom";
-import { selectTab } from "../../store/form/selectors";
+import { selectTab } from "../../store/tab/selectors";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setTabs } from "../../store/form/slice";
+import { setTabs } from "../../store/tab/slice";
 
 export function TabEditPage () {
   const { id } = useParams();
