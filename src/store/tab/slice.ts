@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export enum PermissionType {
+  READ = 'read',
+  WRITE = 'write', 
+  MANAGE = 'manage'
+}
+
 export type Tab = {
   "@id"?: string;
   "@type"?: string;
@@ -10,6 +16,8 @@ export type Tab = {
   parent?: string;
   type: string;
   position: number;
+  permission: PermissionType;
+  permissions: any[];
   children?: Tab[];
 };
 

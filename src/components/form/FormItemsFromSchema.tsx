@@ -9,7 +9,7 @@ import { XJoinList } from "./XJoinList";
 type FormItemsFromSchemaType = {
   schema: ObjectSchema;
   form?: string,
-  joinList?: string;
+  joinList?: any[];
 }
 
 export function FormItemsFromSchema({ schema, form, joinList}: FormItemsFromSchemaType) {
@@ -19,7 +19,8 @@ export function FormItemsFromSchema({ schema, form, joinList}: FormItemsFromSche
       {schema.properties && Object.keys(schema.properties).map((field) => {
         const fieldSchema = schema.properties[field];
 
-        let input=<Input />;
+        let item = undefined;
+        let input = <Input />;
         switch (extractFormat(schema.properties[field])) {
           case "integer":
           case "number":
@@ -35,9 +36,9 @@ export function FormItemsFromSchema({ schema, form, joinList}: FormItemsFromSche
             break;
           case "join-list":
             if(fieldSchema["x-join"]) {
-              const { properties, type, required } = fieldSchema["x-join"];
-              if (typeof properties === "object" && typeof type === "string" && typeof required === "object") {
-                input=<XJoinList schema={fieldSchema["x-join"]} form={form} field={field} />
+              const { properties, required } = fieldSchema["x-join"];
+              if (typeof properties === "object" && typeof required === "object") {
+                item=<XJoinList schema={fieldSchema["x-join"]} form={form} field={field} />
               }
             }
             break;
@@ -53,10 +54,10 @@ export function FormItemsFromSchema({ schema, form, joinList}: FormItemsFromSche
             input=<Input placeholder={fieldSchema.example ?? undefined} />
             break;
         }
-        return (
+        return (item ? item :
           <Form.Item
-            key={joinList ? `${joinList}[${field}]` : field}
-            name={joinList ? `${joinList}[${field}]` : field}
+            key={joinList ? joinList.reduce((acc, occ) => `${acc}_${occ}`, field) : field}
+            name={joinList ? [...joinList, field] : field}
             label={t(`form.${form ?? "form"}.${field}`, {}, field)}
             rules={extractRules(schema, field, t)}
             valuePropName={extractFormat(fieldSchema) === "boolean" ? "checked" : undefined} 

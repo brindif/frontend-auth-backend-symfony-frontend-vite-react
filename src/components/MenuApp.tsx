@@ -11,7 +11,7 @@ import {
   FormOutlined,
   ArrowRightOutlined
 } from "@ant-design/icons";
-import { setCurrentTabs, Tab } from "../store/tab/slice";
+import { setCurrentTabs, Tab, PermissionType } from "../store/tab/slice";
 import { useDispatch } from "react-redux";
 import type { CSSProperties } from "react";
 import { useMemo, useState } from "react";
@@ -62,12 +62,12 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties
       key: (isTree && tab.children && tab.children.length > 0 ? 'cat-' : '')+(tab['@id'] ?? `tab-${key}`),
       label: <>
         { t(tab.name, {}, tab.defaultName ?? undefined) }
-        <Button
+        { tab.permission === PermissionType.MANAGE && <Button
           onClick={e => onEditTab(e, tab)}
           shape="circle"
           size="small"
           icon={<FormOutlined />}
-          type={selectedButtonKey === tab['@id'] ? "primary" : "default"} />
+          type={selectedButtonKey === tab['@id'] ? "primary" : "default"} /> }
       </>,
       ...(isTree && tab.children && tab.children.length > 0 ? {
         children: [

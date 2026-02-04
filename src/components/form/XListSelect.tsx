@@ -51,7 +51,7 @@ export function XListSelect({ xList, value, onChange }: Props) {
 
   return (
     <Select
-      loading={itemLoaded}
+      loading={!itemLoaded}
       value={value}
       onChange={onChange}
       options={itemLoaded ? items.map((item: any) => ({

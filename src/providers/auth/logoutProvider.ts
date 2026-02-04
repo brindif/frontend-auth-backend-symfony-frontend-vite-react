@@ -1,5 +1,6 @@
 import { store } from "../../store/store";
-import { clearAuth, setCurentUser } from "../../store/auth/slice";
+import { clearAuth } from "../../store/auth/slice";
+import { clearTabs } from "../../store/tab/slice";
 import axios from "axios";
 import { logoutRequest, LogoutError } from "../../api/auth/logoutApi";
 import { AuthActionResponse } from "@refinedev/core"
@@ -9,6 +10,7 @@ export async function logoutProvider(): Promise<AuthActionResponse> {
     const data = await logoutRequest();
 
     store.dispatch(clearAuth());
+    store.dispatch(clearTabs());
     return {
       success: true,
       successNotification: { message: "logout.success" },
