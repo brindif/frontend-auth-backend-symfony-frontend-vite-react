@@ -40,7 +40,7 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties
     if (!tab) return;
     setSelectedButtonKey(null);
     dispatch(setCurrentTabs(tab));
-    navigate(`/${tab.route}`);
+    navigate(`/${tab.path}`);
   };
 
   // Initialize edit tab form action

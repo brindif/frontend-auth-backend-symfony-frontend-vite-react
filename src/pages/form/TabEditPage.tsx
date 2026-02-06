@@ -5,10 +5,10 @@ import type { RootState } from "../../store/store";
 import { App, Form, Typography, Button } from "antd";
 import { FormItemsFromSchema } from "../../components/form/FormItemsFromSchema";
 import { useParams } from "react-router-dom";
-import { selectTab } from "../../store/tab/selectors";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setTabs } from "../../store/tab/slice";
+import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 
 export function TabEditPage () {
   const { id } = useParams();
@@ -66,13 +66,30 @@ export function TabEditPage () {
     }, {
       onSuccess:(data: any) => {
         setShouldRefetchTabs(true);
-        message.success(t("admin.tab.success", {}, "Tab updated successfully"), 10);
+        message.success(t("tab.success", {}, "Tab updated successfully"), 10);
       },
       onError: (error: any) => {
-        message.error(t(error?.message ?? "admin.tab.error.request", {}, "Error updating tab"), 10);
+        message.error(t(error?.message ?? "tab.error.request", {}, "Error updating tab"), 10);
       } 
     });
   };
+
+  // Detele tab
+  const onDelete = () => {
+    postQuery({
+      url: `/tab/${id}`,
+      method: "delete",
+      values: {id: id},
+    }, {
+      onSuccess:(data: any) => {
+        setShouldRefetchTabs(true);
+        message.success(t("tab.delete.success", {}, "Tab delete successfully"), 10);
+      },
+      onError: (error: any) => {
+        message.error(t(error?.message ?? "tab.delete.error.request", {}, "Error deleting tab"), 10);
+      } 
+    });
+  }
 
   return (
     <Form
@@ -81,14 +98,19 @@ export function TabEditPage () {
       onFinish={(formData) => onFinish({ formData })}
       layout="vertical">
       <Typography.Title level={3}>
-        { t("admin.tab.title", {}, "Edit Tab") }
+        { t("tab.title", {}, "Edit Tab") }
       </Typography.Title>
 
       { content }
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit">{ t("admin.tab.submit", {}, "Submit") }</Button>
-      </Form.Item>
+      <Typography className="button">
+        <Button type="primary" icon={<SaveOutlined />} htmlType="submit">
+          { t("tab.button.submit", {}, "Submit") }
+        </Button>
+        <Button type="primary" onClick={() => onDelete()} danger icon={<DeleteOutlined />}>
+          { t("tab.button.delete", {}, "Delete") }
+        </Button>
+      </Typography>
     </Form>
   );
 };

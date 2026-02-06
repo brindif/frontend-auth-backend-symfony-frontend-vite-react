@@ -21,3 +21,8 @@ ul.ant-menu button {
 ul.ant-menu .sub-menu {
   color: var(--ant-color-text-description);
 }
+
+form.content .button {
+  display: flex;
+  justify-content: space-between;
+}

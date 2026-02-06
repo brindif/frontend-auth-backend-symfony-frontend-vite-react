@@ -12,6 +12,7 @@ export type Tab = {
   id?: string;
   name: string;
   defaultName?: string;
+  path: string;
   route: string;
   parent?: string;
   type: string;
@@ -46,11 +47,9 @@ function getChildren(parent: Tab, tabs: Tab[]): Tab[] {
   return tabs
     .filter((tab) => tab.parent === parent['@id'])
     .map((tab) => {
-      tab.route = `${parent.route}/${tab.route}`;
-      return {
-        ...tab,
-        children: getChildren(tab, tabs),
-      }
+        tab.path = `${parent.path}/${tab.route}`;
+        tab.children = getChildren(tab, tabs);
+        return tab;
     })
     .sort((a, b) => a.position - b.position);
 };
@@ -61,10 +60,11 @@ const tabSlice = createSlice({
   reducers: {
     setTabs: (state, action: PayloadAction<Tab[]>) => {
       state.tabs = action.payload;
-      state.tree = action.payload.filter((tab) => !tab.parent).map((tab) => ({
-        ...tab,
-        children: getChildren(tab, action.payload),
-      })).sort((a, b) => a.position - b.position);
+      state.tree = action.payload.filter((tab) => !tab.parent).map((tab) => {
+        tab.path = tab.route;
+        tab.children = getChildren(tab, action.payload);
+        return tab;
+      }).sort((a, b) => a.position - b.position);
     },
     clearTabs: (state) => {
       state.tabs = [];

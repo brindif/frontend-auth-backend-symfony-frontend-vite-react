@@ -38,7 +38,11 @@ export function FormItemsFromSchema({ schema, form, joinList}: FormItemsFromSche
             if(fieldSchema["x-join"]) {
               const { properties, required } = fieldSchema["x-join"];
               if (typeof properties === "object" && typeof required === "object") {
-                item=<XJoinList schema={fieldSchema["x-join"]} form={form} field={field} />
+                item=<XJoinList
+                  key={joinList ? joinList.reduce((acc, occ) => `${acc}_${occ}`, field) : field}
+                  schema={fieldSchema["x-join"]}
+                  form={form}
+                  field={field} />
               }
             }
             break;

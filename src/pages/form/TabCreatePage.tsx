@@ -29,7 +29,6 @@ export function TabCreatePage () {
     if (shouldRefetchTabs && queryTabs.isSuccess && queryTabs.data?.data?.member) {
       dispatch(setTabs(queryTabs.data.data.member));
       setShouldRefetchTabs(false);
-      navigate('/');
     }
   }, [queryTabs.isSuccess, queryTabs.data, shouldRefetchTabs]);
 
@@ -46,6 +45,7 @@ export function TabCreatePage () {
       onSuccess:(data: any) => {
         setShouldRefetchTabs(true);
         message.success(t("admin.tab.success", {}, "Tab created successfully"), 10);
+        navigate(`/form/tab/${data.data.id}`);
       },
       onError: (error: any) => {
         message.error(t(error?.message ?? "admin.tab.error.request", {}, "Error creating tab"), 10);

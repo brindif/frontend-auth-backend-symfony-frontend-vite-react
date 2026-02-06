@@ -25,7 +25,7 @@ export function XJoinList({ schema, field, form}: XJoinListType) {
       {(fields, { add, remove }) => (
         <>
           {fields.map(({ key, name, ...restField }) => (
-            <Space key={key} direction="vertical" style={styles.space}>
+            <Space key={`${field}/${key}`} direction="vertical" style={styles.space}>
               <FormItemsFromSchema schema={schema} form={form} joinList={[name]} />
               <Button type="dashed" onClick={() => remove(name)} icon={<MinusCircleOutlined />} />
             </Space>
