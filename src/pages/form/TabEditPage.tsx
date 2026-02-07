@@ -1,5 +1,5 @@
 import { useCustom, useTranslate, useCustomMutation } from "@refinedev/core";
-import { selectSchema } from '../../store/tab/selectors';
+import { selectSchema } from '../../store/form/selectors';
 import { useAppSelector } from "../../store/hooks";
 import type { RootState } from "../../store/store";
 import { App, Form, Typography, Button } from "antd";
@@ -7,11 +7,13 @@ import { FormItemsFromSchema } from "../../components/form/FormItemsFromSchema";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setTabs } from "../../store/tab/slice";
+import { clearTabs } from "../../store/tab/slice";
 import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 export function TabEditPage () {
   const { id } = useParams();
+  const navigate = useNavigate();
   
   // Initialize form field
   const fullSchema = useAppSelector((state: RootState) => selectSchema(state, '/api/tab/{id}', 'put'));
@@ -49,7 +51,7 @@ export function TabEditPage () {
   });
   useEffect(() => {
     if (shouldRefetchTabs && queryTabs.isSuccess && queryTabs.data?.data?.member) {
-      dispatch(setTabs(queryTabs.data.data.member));
+      dispatch(clearTabs());
       setShouldRefetchTabs(false);
     }
   }, [queryTabs.isSuccess, queryTabs.data, dispatch, shouldRefetchTabs]);
@@ -84,6 +86,7 @@ export function TabEditPage () {
       onSuccess:(data: any) => {
         setShouldRefetchTabs(true);
         message.success(t("tab.delete.success", {}, "Tab delete successfully"), 10);
+        navigate(`/`);
       },
       onError: (error: any) => {
         message.error(t(error?.message ?? "tab.delete.error.request", {}, "Error deleting tab"), 10);

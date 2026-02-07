@@ -1,5 +1,5 @@
 import { useCustom, useTranslate, useCustomMutation } from "@refinedev/core";
-import { selectSchema } from '../../store/tab/selectors';
+import { selectSchema } from '../../store/form/selectors';
 import { useAppSelector } from "../../store/hooks";
 import type { RootState } from "../../store/store";
 import { App, Form, Typography, Button } from "antd";

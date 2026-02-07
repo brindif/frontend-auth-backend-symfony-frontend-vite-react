@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
 
 export enum PermissionType {
   READ = 'read',
@@ -7,7 +7,7 @@ export enum PermissionType {
 }
 
 export type Tab = {
-  "@id"?: string;
+  "@id": string;
   "@type"?: string;
   id?: string;
   name: string;
@@ -22,78 +22,60 @@ export type Tab = {
   children?: Tab[];
 };
 
-export type OpenApi = {
-  paths: Record<string, any>;
-  components: {
-    schemas: Record<string, any>;
-  };
-};
-
 export type FormState = {
-  openApi: OpenApi| null;
-  tabs: Tab[] | null;
-  currentTabs: Tab[];
-  tree: any[];
+  currentTabs: string[];
+  tabs: Record<string, Tab> | null;
 };
 
 const initialState: FormState = {
-  openApi: null,
   tabs: null,
-  tree: [],
   currentTabs: [],
 };
 
-function getChildren(parent: Tab, tabs: Tab[]): Tab[] {
-  return tabs
-    .filter((tab) => tab.parent === parent['@id'])
-    .map((tab) => {
-        tab.path = `${parent.path}/${tab.route}`;
-        tab.children = getChildren(tab, tabs);
-        return tab;
-    })
-    .sort((a, b) => a.position - b.position);
+const getTabs = (tabs: Tab[], path: string, parent: string|undefined): Record<string, Tab> => {
+  return tabs.filter((tab) => tab.parent === parent)
+    .reduce((acc: Record<string, any>, tab: Tab) => ({
+      ...acc,
+      [tab['@id']]: {
+        ...tab,
+        path: `${path}/${tab.route}`,
+        children: getTabs(tabs, `${path}/${tab.route}`, tab['@id']),
+      },
+    }), {});
 };
+
+const getCurrentsRec = (tabs:Record<string, any>, id:string): string[]|undefined => {
+  if(tabs[id])
+    return [id];
+  else if (Object.keys(tabs).length)
+    for(let [childId, childTab] of Object.entries(tabs)) {
+      const currents = getCurrentsRec(childTab.children, id);
+      if (currents && currents.length) {
+        return [childId, ...currents];
+      }
+    }
+  else
+    return [];
+}
 
 const tabSlice = createSlice({
   name: "tab",
   initialState,
   reducers: {
     setTabs: (state, action: PayloadAction<Tab[]>) => {
-      state.tabs = action.payload;
-      state.tree = action.payload.filter((tab) => !tab.parent).map((tab) => {
-        tab.path = tab.route;
-        tab.children = getChildren(tab, action.payload);
-        return tab;
-      }).sort((a, b) => a.position - b.position);
+      state.tabs = getTabs(action.payload, '', undefined);
     },
     clearTabs: (state) => {
-      state.tabs = [];
+      state.tabs = null;
+      state.currentTabs = [];
     },
     setCurrentTabs: (state, action: PayloadAction<Tab | null>) => {
-      if (!action.payload) {
-        state.currentTabs = [];
-        return;
+      if (state.tabs && action.payload && action.payload['@id']) {
+        state.currentTabs = getCurrentsRec(state.tabs, action.payload['@id']) ?? [];
       }
-      state.currentTabs = [action.payload];
-      let parent = action.payload.parent;
-      while (parent) {
-        const parentTab = state.tabs?.find((tab) => tab['@id'] === parent);
-        if (parentTab) {
-          state.currentTabs.unshift(parentTab);
-          parent = parentTab.parent;
-        } else {
-          parent = undefined;
-        }
-      }
-    },
-    setOpenApi: (state, action: PayloadAction<OpenApi>) => {
-      state.openApi = action.payload;
-    },
-    clearOpenApi: (state) => {
-      state.openApi = null;
     },
   },
 });
 
-export const { setTabs, clearTabs, setCurrentTabs, setOpenApi, clearOpenApi } = tabSlice.actions;
+export const { setTabs, clearTabs, setCurrentTabs } = tabSlice.actions;
 export default tabSlice.reducer;

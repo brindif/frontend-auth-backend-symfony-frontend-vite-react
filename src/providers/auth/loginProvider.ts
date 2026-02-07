@@ -4,12 +4,14 @@ import { store } from "../../store/store";
 import { loginRequest, LoginRequest, LoginError } from "../../api/auth/loginApi";
 import { currentUserRequest, CurrentUserError } from "../../api/auth/currentUserApi";
 import { setAuthed, setCurentUser } from "../../store/auth/slice";
+import { clearTabs } from "../../store/tab/slice";
 
 export async function loginProvider(fields: LoginRequest): Promise<AuthActionResponse> {
   try {
     const data = await loginRequest(fields);
 
     store.dispatch(setAuthed(true));
+    store.dispatch(clearTabs());
   } catch (e) {
     const data = axios.isAxiosError<LoginError>(e) ? e.response?.data : undefined;
     return {

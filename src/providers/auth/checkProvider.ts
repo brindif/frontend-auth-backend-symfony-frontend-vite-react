@@ -4,8 +4,8 @@ import { refreshTokenRequest } from "../../api/auth/refreshTokenApi";
 import { currentUserRequest } from "../../api/auth/currentUserApi";
 import { setAuthed, setCurentUser } from "../../store/auth/slice";
 import { CheckResponse } from "@refinedev/core"
-import { setOpenApi, setTabs, setCurrentTabs, Tab } from "../../store/tab/slice";
-import { selectOpenApi, selectTabs } from "../../store/tab/selectors";
+import { setOpenApi } from "../../store/form/slice";
+import { selectOpenApi } from "../../store/form/selectors";
 import { tabsRequest } from "../../api/form/tabsRequest";
 import { openApiRequest } from "../../api/form/openApiRequest";
 
@@ -56,7 +56,7 @@ export async function checkProvider(): Promise<CheckResponse> {
     }
   }
   //Load tabs after successful authentication
-  const tabs = selectTabs(store.getState());
+  /*const tabs = selectTabs(store.getState());
   if (!tabs) {
     try {
       const data = await tabsRequest();
@@ -72,6 +72,6 @@ export async function checkProvider(): Promise<CheckResponse> {
         redirectTo: "/login",
       };
     }
-  }
+  }*/
   return { authenticated: true };
 };

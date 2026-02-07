@@ -3,7 +3,6 @@ import { useTranslate } from "@refinedev/core";
 import { Link } from "react-router-dom";
 import { Button, Breadcrumb, Layout, Menu, Typography, Tooltip } from "antd";
 import { FiLogIn, FiUser, FiMenu, FiX } from "react-icons/fi";
-import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import { LogoutButton } from "./pages/auth/LogoutButton"
 import { Title } from "./components/Title";
 import Router from "./Router";
@@ -12,7 +11,8 @@ import { appStyles } from "./appStyles";
 import { useAppSelector } from "./store/hooks";
 import { selectCurrentUser } from "./store/auth/selectors";
 import { MenuApp } from "./components/MenuApp";
-import { selectCurrentTabs } from "./store/tab/selectors";
+import { selectCurrentTabs, selectTabs } from "./store/tab/selectors";
+import { getTab } from "./utils/tab/manageTab";
 import "./app.css";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -23,6 +23,7 @@ export default function DashboardPage() {
   const [collapsed, setCollapsed] = useState(false);
   const t = useTranslate();
   const selectedTabs = useAppSelector(selectCurrentTabs);
+  const tabs = useAppSelector(selectTabs);
 
   return (
     <Layout style={ appStyles.app }>
@@ -68,7 +69,12 @@ export default function DashboardPage() {
               icon={collapsed ? <FiMenu /> : <FiX />}
               onClick={() => setCollapsed(!collapsed)}
             />
-            <Breadcrumb style={ appStyles.breadcrumb } items={selectedTabs.map(tab => ({title: tab.name}))} />
+            <Breadcrumb style={ appStyles.breadcrumb } items={selectedTabs.map(id => {
+              const tab = getTab(tabs, id);
+              return {
+                title: <Link to={tab.path}>{ tab.name }</Link>
+              };
+            })} />
           </Typography>
           <Content style={ appStyles.content }>
             { user === null &&
