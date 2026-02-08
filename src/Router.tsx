@@ -9,19 +9,22 @@ import { ProfilePage } from "./pages/auth/ProfilePage";
 import { TabCreatePage } from "./pages/form/TabCreatePage";
 import { TabEditPage } from "./pages/form/TabEditPage";
 import { useLocation } from "react-router-dom";
+import { Layout } from "./components/routing/Layout";
 
 export default function Router() {
   const location = useLocation();
   return (
     <Routes>
-      <Route path="/account" element={<ProfilePage />} />
-      <Route path="/update-password" element={<UpdatePasswordPage />} />
-      <Route path="/validate-update-email" element={<ValidateUpdateEmailPage />} />
-      <Route path="/verify-email" element={<VerifyEmailPage />} />
-      <Route path="/update-email" element={<UpdateEmailPage />} />
-      <Route path="/form/tab" element={<TabCreatePage />} />
-      <Route path="/form/tab/:id" element={<TabEditPage key={location.pathname} />} />
-      <Route path="/" element={<DashboardPage />} />
+      <Route element={<Layout />}>
+        <Route path="/account" element={<ProfilePage />} />
+        <Route path="/update-password" element={<UpdatePasswordPage />} />
+        <Route path="/validate-update-email" element={<ValidateUpdateEmailPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/update-email" element={<UpdateEmailPage />} />
+        <Route path="/form/tab" element={<TabCreatePage />} />
+        <Route path="/form/tab/:id" element={<TabEditPage key={location.pathname} />} />
+        <Route path="/*" element={<DashboardPage />} />
+      </Route>
     </Routes>
   );
 }

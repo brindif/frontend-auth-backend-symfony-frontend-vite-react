@@ -6,6 +6,7 @@ import { ForgotPasswordPage } from "./pages/auth/ForgotPasswordPage";
 import { UpdatePasswordPage } from "./pages/auth/UpdatePasswordPage";
 import { VerifyEmailPage } from "./pages/auth/VerifyEmailPage";
 import { ValidateUpdateEmailPage } from "./pages/auth/ValidateUpdateEmailPage";
+import { DashboardPage } from "./pages/DashboardPage";
 
 export default function RouterUnauthed() {
   return (
@@ -13,10 +14,11 @@ export default function RouterUnauthed() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/validate-update-email" element={<ValidateUpdateEmailPage />} />
+      <Route path="/validate-update-email" element={<ValidateUpdateEmailPage />} />
       <Route path="/update-password" element={<UpdatePasswordPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
       <Route path="/" element={<LoginPage />} />
+      <Route path="/*" element={<DashboardPage />} />
     </Routes>
   );
 }

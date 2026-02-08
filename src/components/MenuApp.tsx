@@ -36,23 +36,21 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties
   const selectedTabs = useAppSelector(selectCurrentTabs);
 
   // Initialize tabs if undefined
-  const [shouldRefetchTabs, setShouldRefetchTabs] = useState(tabs === null);
+  const [lastRefetchTabs, setLastRefetchTabs] = useState<number>(-1);
   const { query: queryTabs } = useCustom({
     url: '/tabs',
     method: "get",
-    queryOptions: { enabled: shouldRefetchTabs, refetchOnMount: false }
+    queryOptions: { enabled: lastRefetchTabs > -1, refetchOnMount: false }
   });
   useEffect(() => {
-    if (!tabs) {
-      setShouldRefetchTabs(true);
-    }
+    if (tabs) return;
+    setLastRefetchTabs(queryTabs.dataUpdatedAt);
   }, [tabs]);
   useEffect(() => {
-    if (shouldRefetchTabs && queryTabs.isSuccess && queryTabs.data?.data?.member) {
-      dispatch(setTabs(queryTabs.data?.data?.member));
-      setShouldRefetchTabs(false);
-    }
-  }, [queryTabs.isSuccess, queryTabs.data, shouldRefetchTabs]);
+    if (lastRefetchTabs === -1 || lastRefetchTabs === queryTabs.dataUpdatedAt) return;
+    dispatch(setTabs(queryTabs.data?.data?.member));
+    setLastRefetchTabs(-1);
+  }, [queryTabs, lastRefetchTabs]);
 
   // Initialize on select tab action
   const onSelect = (key: string) => {

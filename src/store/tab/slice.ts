@@ -72,6 +72,8 @@ const tabSlice = createSlice({
     setCurrentTabs: (state, action: PayloadAction<Tab | null>) => {
       if (state.tabs && action.payload && action.payload['@id']) {
         state.currentTabs = getCurrentsRec(state.tabs, action.payload['@id']) ?? [];
+      } else {
+        state.currentTabs = [];
       }
     },
   },

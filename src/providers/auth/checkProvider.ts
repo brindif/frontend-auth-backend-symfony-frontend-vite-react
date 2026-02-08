@@ -6,7 +6,6 @@ import { setAuthed, setCurentUser } from "../../store/auth/slice";
 import { CheckResponse } from "@refinedev/core"
 import { setOpenApi } from "../../store/form/slice";
 import { selectOpenApi } from "../../store/form/selectors";
-import { tabsRequest } from "../../api/form/tabsRequest";
 import { openApiRequest } from "../../api/form/openApiRequest";
 
 export async function checkProvider(): Promise<CheckResponse> {
@@ -17,7 +16,6 @@ export async function checkProvider(): Promise<CheckResponse> {
   //Refresh token if BEARER token is expired
   try {
     const data = await refreshTokenRequest();
-
     store.dispatch(setAuthed(true));
   } catch (e) {
     //Return false and redirect to login if token cann't be refresh
@@ -31,7 +29,6 @@ export async function checkProvider(): Promise<CheckResponse> {
   if (!user) {
     try {
       const data = await currentUserRequest();
-      
       store.dispatch(setCurentUser(data.user));
     } catch (e) {
       //Return false and redirect to login
@@ -55,23 +52,5 @@ export async function checkProvider(): Promise<CheckResponse> {
       };
     }
   }
-  //Load tabs after successful authentication
-  /*const tabs = selectTabs(store.getState());
-  if (!tabs) {
-    try {
-      const data = await tabsRequest();
-      store.dispatch(setTabs(data));
-      // TODO : get first tab from data or from route
-      if (data.length > 0) {
-        store.dispatch(setCurrentTabs(data.find((tab) => !tab.parent) ?? null));
-      }
-    } catch (e) {
-      //Return false and redirect to login
-      return {
-        authenticated: false,
-        redirectTo: "/login",
-      };
-    }
-  }*/
   return { authenticated: true };
 };
