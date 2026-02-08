@@ -5,11 +5,13 @@ import type { RootState } from "../../store/store";
 import { App, Form, Typography, Button } from "antd";
 import { FormItemsFromSchema } from "../../components/form/FormItemsFromSchema";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { clearTabs } from "../../store/tab/slice";
 import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { selectTabs } from "../../store/tab/selectors";
+import { getTab } from "../../utils/tab/manageTab";
 
 export function TabEditPage () {
   const { id } = useParams();
@@ -26,35 +28,21 @@ export function TabEditPage () {
   ) : null;
 
   // Initialize form values
-  const [isTabLoaded, setIsTabLoaded] = useState(false);
-  let tab = undefined;
-  const { query: queryTab } = useCustom({
-    url: `/tab/${id}`,
-    method: "get",
-    queryOptions: { enabled: !isTabLoaded, refetchOnMount: false }
-  });
+  const tabs = useAppSelector(selectTabs);
   useEffect(() => {
-    if (!isTabLoaded && queryTab.isSuccess && Number(id) === Number(queryTab.data?.data?.id)) {
-      setIsTabLoaded(true);
-      tab = queryTab.data?.data;
-      form.setFieldsValue(tab);
-    }
-  }, [isTabLoaded, queryTab, id]);
+    const tab =  getTab(tabs, `/api/tab/${id}`);
+    form.setFieldsValue(tab);
+  }, [tabs, id]);
 
   // Change tabs list in redux
   const dispatch = useDispatch();
   const [shouldRefetchTabs, setShouldRefetchTabs] = useState(false);
-  const { query: queryTabs } = useCustom({
-    url: '/tabs',
-    method: "get",
-    queryOptions: { enabled: shouldRefetchTabs, refetchOnMount: false }
-  });
   useEffect(() => {
-    if (shouldRefetchTabs && queryTabs.isSuccess && queryTabs.data?.data?.member) {
+    if (shouldRefetchTabs) {
       dispatch(clearTabs());
       setShouldRefetchTabs(false);
     }
-  }, [queryTabs.isSuccess, queryTabs.data, dispatch, shouldRefetchTabs]);
+  }, [shouldRefetchTabs]);
 
   // Validate form
   const t = useTranslate();

@@ -43,6 +43,11 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties
     queryOptions: { enabled: shouldRefetchTabs, refetchOnMount: false }
   });
   useEffect(() => {
+    if (!tabs) {
+      setShouldRefetchTabs(true);
+    }
+  }, [tabs]);
+  useEffect(() => {
     if (shouldRefetchTabs && queryTabs.isSuccess && queryTabs.data?.data?.member) {
       dispatch(setTabs(queryTabs.data?.data?.member));
       setShouldRefetchTabs(false);

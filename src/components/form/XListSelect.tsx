@@ -20,7 +20,6 @@ export function XListSelect({ xList, value, onChange }: Props) {
   let items = useAppSelector((store) => selectList(store, xList.route));
 
   const [isNedeed, setIsNedeed] = useState(false);
-  const [itemLoaded, setItemLoaded] = useState(false);
 
   const { query } = useCustom({
     url: xList.route,
@@ -32,29 +31,24 @@ export function XListSelect({ xList, value, onChange }: Props) {
   });
 
   useEffect(() => {
-    if (!itemLoaded && isNedeed && query.isSuccess) {
-      items = query.data?.data?.member ?? [];
-      dispatch(addList({route: xList.route, list: items}));
+    if (isNedeed && query.isSuccess) {
+      dispatch(addList({route: xList.route, list: query.data?.data?.member ?? []}));
       setIsNedeed(false);
-      setItemLoaded(true);
       return;
     }
-    if (!itemLoaded && items) {
-      setItemLoaded(true);
-      return;
-    }
-    if (!itemLoaded && !isNedeed && !items && !query.isSuccess) {
+    if (!isNedeed && !items) {
+
       setIsNedeed(true);
       return;
     }
-  }, [items, itemLoaded, isNedeed, query]);
+  }, [items, isNedeed, query]);
 
   return (
     <Select
-      loading={!itemLoaded}
+      loading={!items}
       value={value}
       onChange={onChange}
-      options={itemLoaded ? items.map((item: any) => ({
+      options={items ? items.map((item: any) => ({
         value: item[xList.identifier],
         label: t(item[xList.label], {}, xList.labelDefault ? item[xList.labelDefault] : undefined),
       })) : []}

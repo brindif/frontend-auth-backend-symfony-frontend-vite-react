@@ -5,7 +5,7 @@ import type { RootState } from "../../store/store";
 import { App, Form, Typography, Button } from "antd";
 import { FormItemsFromSchema } from "../../components/form/FormItemsFromSchema";
 import { useDispatch } from "react-redux";
-import { setTabs } from "../../store/tab/slice";
+import { clearTabs } from "../../store/tab/slice";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -17,20 +17,12 @@ export function TabCreatePage () {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [shouldRefetchTabs, setShouldRefetchTabs] = useState(false);
-  const { query: queryTabs } = useCustom({
-    url: '/tabs',
-    method: "get",
-    queryOptions: {
-      enabled: shouldRefetchTabs,
-      refetchOnMount: false,
-    }
-  });
   useEffect(() => {
-    if (shouldRefetchTabs && queryTabs.isSuccess && queryTabs.data?.data?.member) {
-      dispatch(setTabs(queryTabs.data.data.member));
+    if (shouldRefetchTabs) {
+      dispatch(clearTabs());
       setShouldRefetchTabs(false);
     }
-  }, [queryTabs.isSuccess, queryTabs.data, shouldRefetchTabs]);
+  }, [shouldRefetchTabs]);
 
   // Validate form
   const t = useTranslate();
