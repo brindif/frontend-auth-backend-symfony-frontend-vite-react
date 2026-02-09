@@ -6,6 +6,7 @@ import { App, Form, Typography, Button } from "antd";
 import { FormItemsFromSchema } from "../../components/form/FormItemsFromSchema";
 import { useDispatch } from "react-redux";
 import { clearTabs } from "../../store/tab/slice";
+import { clearList } from "../../store/form/slice";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,6 +21,7 @@ export function TabCreatePage () {
   useEffect(() => {
     if (shouldRefetchTabs) {
       dispatch(clearTabs());
+      dispatch(clearList('/tabs'));
       setShouldRefetchTabs(false);
     }
   }, [shouldRefetchTabs]);

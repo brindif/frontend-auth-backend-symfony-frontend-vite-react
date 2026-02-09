@@ -1,4 +1,4 @@
-import { Select } from "antd";
+import { Select, Space } from "antd";
 import { useCustom, useTranslate } from "@refinedev/core";
 import { XList } from "../../utils/form/openApiTypes";
 import { useAppSelector } from "../../store/hooks";
@@ -19,29 +19,24 @@ export function XListSelect({ xList, value, onChange }: Props) {
 
   let items = useAppSelector((store) => selectList(store, xList.route));
 
-  const [isNedeed, setIsNedeed] = useState(false);
-
+  const [lastRefetchList, setLastRefetchList] = useState<number>(-1);
   const { query } = useCustom({
     url: xList.route,
     method: "get",
     queryOptions: {
-      enabled: isNedeed,
+      enabled: lastRefetchList > -1,
       refetchOnMount: false,
     }
   });
-
   useEffect(() => {
-    if (isNedeed && query.isSuccess) {
-      dispatch(addList({route: xList.route, list: query.data?.data?.member ?? []}));
-      setIsNedeed(false);
-      return;
-    }
-    if (!isNedeed && !items) {
-
-      setIsNedeed(true);
-      return;
-    }
-  }, [items, isNedeed, query]);
+    if (items) return;
+    setLastRefetchList(query.dataUpdatedAt);
+  }, [items]);
+  useEffect(() => {
+    if (lastRefetchList === -1 || lastRefetchList === query.dataUpdatedAt) return;
+    dispatch(addList({route: xList.route, list: query.data?.data?.member ?? []}));
+    setLastRefetchList(-1);
+  }, [query, lastRefetchList]);
 
   return (
     <Select
@@ -50,7 +45,11 @@ export function XListSelect({ xList, value, onChange }: Props) {
       onChange={onChange}
       options={items ? items.map((item: any) => ({
         value: item[xList.identifier],
-        label: t(item[xList.label], {}, xList.labelDefault ? item[xList.labelDefault] : undefined),
+        label: <Space>
+          { Array.from({length: item.level}).map(() => ("\u00A0\u00A0\u00A0")) }
+          { item.level>0 && "\u21B3" }
+          { t(item[xList.label], {}, xList.labelDefault ? item[xList.labelDefault] : undefined) }
+        </Space>,
       })) : []}
     />
   );

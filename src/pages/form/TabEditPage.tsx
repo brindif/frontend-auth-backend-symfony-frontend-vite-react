@@ -5,9 +5,10 @@ import type { RootState } from "../../store/store";
 import { App, Form, Typography, Button } from "antd";
 import { FormItemsFromSchema } from "../../components/form/FormItemsFromSchema";
 import { useParams } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { clearTabs } from "../../store/tab/slice";
+import { clearList } from "../../store/form/slice";
 import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { selectTabs } from "../../store/tab/selectors";
@@ -40,6 +41,7 @@ export function TabEditPage () {
   useEffect(() => {
     if (shouldRefetchTabs) {
       dispatch(clearTabs());
+      dispatch(clearList('/tabs'));
       setShouldRefetchTabs(false);
     }
   }, [shouldRefetchTabs]);
