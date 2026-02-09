@@ -7,7 +7,6 @@ import { Button, Menu, MenuProps } from "antd";
 import { CalendarOutlined, FileTextOutlined, ApartmentOutlined, ReadOutlined, FormOutlined } from "@ant-design/icons";
 import { setTabs, setCurrentTabs, setOpenTabs, Tab, PermissionType } from "../store/tab/slice";
 import { useDispatch } from "react-redux";
-import type { CSSProperties } from "react";
 import { useMemo, useState, useEffect } from "react";
 
 const tabTypeIcon = (type: string | undefined):any => {
@@ -19,7 +18,7 @@ const tabTypeIcon = (type: string | undefined):any => {
   }
 };
 
-export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties; }) {
+export function MenuApp(props: { mode?: MenuProps["mode"]; id?: string; }) {
   const isTopMenu = props.mode === 'horizontal';
   const t = useTranslate();
   const dispatch = useDispatch();
@@ -51,7 +50,6 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties
     if(!nextOpenKeys.length) return;
     const tab = getTab(tabs, nextOpenKeys.at(-1));
     if (!tab) return;
-    dispatch(setCurrentTabs(tab));
     navigate(`/${tab.path}`);
   };
 
@@ -59,7 +57,6 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties
   const onSelect = (key: string) => {
     const tab = getTab(tabs, key);
     if (!tab) return;
-    dispatch(setCurrentTabs(tab));
     navigate(`/${tab.path}`);
   };
 
@@ -97,7 +94,6 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties
     if (isTopMenu || !currentTabs.length || !tabs) return;
     let parentId = currentTabs.at(0);
     if (!parentId || !tabs[parentId]) return;
-    console.log('onEditTab', currentTabs.at(0));
     setParentTab(parentId);
   }, [currentTabs]);
 
@@ -118,6 +114,6 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties
     openKeys={ openTabs }
     onOpenChange={ handleOpenChange }
     items={ menu }
-    style={ props.style }
+    id={ props.id }
   />;
 }

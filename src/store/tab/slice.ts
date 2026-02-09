@@ -22,16 +22,41 @@ export type Tab = {
   children?: Tab[];
 };
 
+export enum MethodType {
+  POST = 'post',
+  PUT = 'put',
+  PATCH = 'patch',
+  DELETE = 'delete',
+}
+
+export enum ElementType {
+  NOTE = 'note',
+  CALENDAR = 'calendar',
+  TREE = 'tree',
+}
+
+export type ContentType = {
+  type: ElementType;
+  method: MethodType;
+  list: string;
+  path: string;
+  values?: Record<string, any>;
+  updated?: boolean;
+  position?: number;
+};
+
 export type FormState = {
   currentTabs: string[];
   openTabs: string[];
   tabs: Record<string, Tab> | null;
+  contents: ContentType[];
 };
 
 const initialState: FormState = {
   tabs: null,
   currentTabs: [],
   openTabs: [],
+  contents: [],
 };
 
 const getTabs = (tabs: Tab[], path: string, parent: string|undefined): Record<string, Tab> => {
@@ -84,8 +109,17 @@ const tabSlice = createSlice({
     setOpenTabs: (state, action: PayloadAction<null|string[]>) => {
       state.openTabs = action.payload ?? [];
     },
+    addContent: (state, action: PayloadAction<ContentType>) => {
+      state.contents.unshift(action.payload);
+    },
+    setContents: (state, action: PayloadAction<ContentType[]>) => {
+      state.contents = action.payload;
+    },
+    clearContents: (state) => {
+      state.contents = [];
+    },
   },
 });
 
-export const { setTabs, clearTabs, setCurrentTabs, setOpenTabs } = tabSlice.actions;
+export const { setTabs, clearTabs, setCurrentTabs, setOpenTabs, addContent, setContents, clearContents } = tabSlice.actions;
 export default tabSlice.reducer;

@@ -7,7 +7,6 @@ import { LogoutButton } from "./pages/auth/LogoutButton"
 import { Title } from "./components/Title";
 import Router from "./Router";
 import RouterUnauthed from "./RouterUnauthed";
-import { appStyles } from "./appStyles";
 import { useAppSelector } from "./store/hooks";
 import { selectCurrentUser } from "./store/auth/selectors";
 import { MenuApp } from "./components/MenuApp";
@@ -26,17 +25,14 @@ export default function DashboardPage() {
   const tabs = useAppSelector(selectTabs);
 
   return (
-    <Layout style={ appStyles.app }>
-      <Header style={ appStyles.header }>
+    <Layout id="app">
+      <Header>
         <Link to="/">
           <Title level={3}/>
         </Link>
-        <MenuApp
-          mode="horizontal"
-          style={ appStyles.menu }
-        />
+        <MenuApp mode="horizontal" id="menu" />
         { user === null &&
-          <Link to="/login" style={ appStyles.button }>
+          <Link to="/login" id="button">
             <Tooltip title={t("menu.login.tooltip", {}, "Login")}>
               <Button
                 icon={<FiLogIn />}
@@ -46,7 +42,7 @@ export default function DashboardPage() {
         }
         { user !== null && 
           <>
-            <Link to="/account" style={ appStyles.button }>
+            <Link to="/account" id="button">
               <Tooltip title={t("menu.account.tooltip", {}, "Account")}>
                 <Button
                   shape="circle"
@@ -55,26 +51,23 @@ export default function DashboardPage() {
               </Tooltip>
             </Link>
             <Tooltip title={t("menu.logout.tooltip", {}, "Logout")}>
-              <LogoutButton style={ appStyles.button } />
+              <LogoutButton id="button" />
             </Tooltip>
           </>
         }
       </Header>
-      <Layout style={ appStyles.body }>
-        <Sider style={ appStyles.sider }  trigger={null} collapsible collapsed={collapsed}>
-          <MenuApp
-            mode="inline"
-            style={ appStyles.submenu }
-          />
+      <Layout id="body">
+        <Sider id="sider"  trigger={null} collapsible collapsed={collapsed}>
+          <MenuApp mode="inline" id="submenu" />
         </Sider>
-        <Layout style={ appStyles.page }>
-          <Typography style={ appStyles.nav }>
+        <Layout id="page">
+          <Layout id="nav">
             <Button
               type="text"
               icon={collapsed ? <FiMenu /> : <FiX />}
               onClick={() => setCollapsed(!collapsed)}
             />
-            <Breadcrumb style={ appStyles.breadcrumb } items={selectedTabs.map(id => {
+            <Breadcrumb items={selectedTabs.map(id => {
               const tab = getTab(tabs, id);
               if (tab) {
                 return { title: <Link to={tab.path}>{ t(tab.name, {}, tab.defaultName ?? undefined) }</Link> };
@@ -82,8 +75,8 @@ export default function DashboardPage() {
                 return { title: <Link to={id}>{t(`breadcrumb.name${id.replaceAll('/', '.')}`, {}, id.replaceAll('/', ' '))}</Link> }
               }
             })} />
-          </Typography>
-          <Content style={ appStyles.content }>
+          </Layout>
+          <Content>
             { user === null &&
               <RouterUnauthed />
             }
@@ -93,7 +86,7 @@ export default function DashboardPage() {
           </Content>
         </Layout>
       </Layout>
-      <Footer style={ appStyles.footer }>
+      <Footer>
       </Footer>
     </Layout>
   );

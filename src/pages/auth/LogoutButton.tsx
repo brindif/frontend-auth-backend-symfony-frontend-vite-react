@@ -4,14 +4,14 @@ import { FiLogOut } from "react-icons/fi";
 import { useTranslate } from "@refinedev/core";
 import { App } from "antd";
 
-export function LogoutButton({style={}}) {
+export function LogoutButton(props: {id: string}) {
   const { mutate: logout } = useLogout();
 
   const t = useTranslate();
   const { message } = App.useApp();
 
   return <Button
-    style={style}
+    id={props.id}
     onClick={() => logout()}
     icon={<FiLogOut />}
   />;

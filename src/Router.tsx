@@ -5,6 +5,7 @@ import { VerifyEmailPage } from "./pages/auth/VerifyEmailPage";
 import { UpdateEmailPage } from "./pages/auth/UpdateEmailPage";
 import { ValidateUpdateEmailPage } from "./pages/auth/ValidateUpdateEmailPage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { ContentPage } from "./pages/ContentPage";
 import { ProfilePage } from "./pages/auth/ProfilePage";
 import { TabCreatePage } from "./pages/form/TabCreatePage";
 import { TabEditPage } from "./pages/form/TabEditPage";
@@ -23,7 +24,8 @@ export default function Router() {
         <Route path="/update-email" element={<UpdateEmailPage />} />
         <Route path="/form/tab" element={<TabCreatePage />} />
         <Route path="/form/tab/:id" element={<TabEditPage key={location.pathname} />} />
-        <Route path="/*" element={<DashboardPage />} />
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/*" element={<ContentPage key={location.pathname} />} />
       </Route>
     </Routes>
   );

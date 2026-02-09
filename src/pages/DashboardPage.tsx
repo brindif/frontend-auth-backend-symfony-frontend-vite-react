@@ -1,26 +1,14 @@
-import { Typography, theme } from "antd";
+import { Typography, Layout } from "antd";
+import { useTranslate } from "@refinedev/core";
 
-export function DashboardPage({level=1}) {
-
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
-
-  const styles: Record<string, React.CSSProperties> = {
-    content: {
-      padding: 24,
-      margin: 0,
-      background: colorBgContainer,
-      borderRadius: borderRadiusLG,
-      minHeight: '100dvh',
-    },
-  };
+export function DashboardPage() {
+  const t = useTranslate();
 
   return (
-    <Typography style={ styles.content }>
+    <Layout id="content">
       <Typography.Title level={1}>
-        Présentation
+        { t('app.title', {}, 'Welcome') }
       </Typography.Title>
-    </Typography>
+    </Layout>
   );
 }

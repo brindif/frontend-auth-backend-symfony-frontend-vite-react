@@ -27,8 +27,9 @@ dist-ssr
 .env
 
 # Certificats
-frontend.rpg.local-key.pem
-frontend.rpg.local.pem
+*.pem
+*.key
+*.crt
 
 # Lock
 package-lock.json

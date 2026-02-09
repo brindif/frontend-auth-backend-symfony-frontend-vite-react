@@ -7,7 +7,7 @@ form.content {
   min-height: 100dvh;
 }
 
-form.content h3 {
+form.ant-form h3 {
   font-size: 24px;
   line-height: 32px;
   margin-bottom: 32px;
@@ -22,7 +22,69 @@ ul.ant-menu .sub-menu {
   color: var(--ant-color-text-description);
 }
 
-form.content .button {
+form.ant-form .button {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+/* App */
+#app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  padding: 0 !important;
+  flex: 0 0 auto;
+}
+#menu {
+  flex: 1;
+  min-width: 0;
+}
+#button {
+  margin-right: 1%;
+}
+/* Body */
+#body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+#sider {
+  min-height: 100dvh;
+}
+#submenu {
+  min-height: 100%;
+  border-inline-end: 0;
+}
+#page {
+  padding: 0 1%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+#nav {
+  flex: 0 0 auto;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  margin: 10px 0;
+}
+main {
+}
+#content {
+  flex: 0 0 100%;
+  padding: 24px;
+  margin: 0;
+  background: var(--ant-color-bg-container);
+  border-radius: var(--ant-border-radius-lg);
+  min-height: 100dvh;
+}
+/* Footer */
+footer {
+  flex: 0 0 auto;
 }
