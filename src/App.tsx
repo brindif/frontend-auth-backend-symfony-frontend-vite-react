@@ -38,7 +38,9 @@ export default function DashboardPage() {
         { user === null &&
           <Link to="/login" style={ appStyles.button }>
             <Tooltip title={t("menu.login.tooltip", {}, "Login")}>
-              <Button icon={<FiLogIn />} />
+              <Button
+                icon={<FiLogIn />}
+                type={selectedTabs.at(-1) === `/login` ? "primary" : "default"} />
             </Tooltip>
           </Link>
         }
@@ -46,7 +48,10 @@ export default function DashboardPage() {
           <>
             <Link to="/account" style={ appStyles.button }>
               <Tooltip title={t("menu.account.tooltip", {}, "Account")}>
-                <Button shape="circle" icon={<FiUser />} />
+                <Button
+                  shape="circle"
+                  icon={<FiUser />}
+                  type={selectedTabs.at(-1) === `/account` ? "primary" : "default"} />
               </Tooltip>
             </Link>
             <Tooltip title={t("menu.logout.tooltip", {}, "Logout")}>
@@ -71,9 +76,11 @@ export default function DashboardPage() {
             />
             <Breadcrumb style={ appStyles.breadcrumb } items={selectedTabs.map(id => {
               const tab = getTab(tabs, id);
-              return {
-                title: <Link to={tab.path}>{ tab.name }</Link>
-              };
+              if (tab) {
+                return { title: <Link to={tab.path}>{ t(tab.name, {}, tab.defaultName ?? undefined) }</Link> };
+              } else {
+                return { title: <Link to={id}>{t(`breadcrumb.name${id.replaceAll('/', '.')}`, {}, id.replaceAll('/', ' '))}</Link> }
+              }
             })} />
           </Typography>
           <Content style={ appStyles.content }>

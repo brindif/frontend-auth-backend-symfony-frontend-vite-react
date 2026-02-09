@@ -3,7 +3,10 @@ export const getTab = (tabs:Record<string, any>|null, id:string|undefined): any|
     return tabs[id];
   else if (id && tabs && Object.keys(tabs).length)
     for(let childTab of Object.values(tabs)) {
-      return getTab(childTab.children, id);
+      let result = getTab(childTab.children, id);
+      if (result) {
+        return result;
+      }
     }
   else
     return null;

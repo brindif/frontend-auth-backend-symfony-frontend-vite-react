@@ -3,7 +3,7 @@ import { selectAuthed, selectCurrentUser } from "../../store/auth/selectors";
 import { refreshTokenRequest } from "../../api/auth/refreshTokenApi";
 import { currentUserRequest } from "../../api/auth/currentUserApi";
 import { setAuthed, setCurentUser } from "../../store/auth/slice";
-import { CheckResponse } from "@refinedev/core"
+import { CheckResponse } from "@refinedev/core";
 import { setOpenApi } from "../../store/form/slice";
 import { selectOpenApi } from "../../store/form/selectors";
 import { openApiRequest } from "../../api/form/openApiRequest";

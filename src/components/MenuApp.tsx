@@ -1,22 +1,14 @@
 import { useCustom, useTranslate } from "@refinedev/core";
 import { useAppSelector } from "../store/hooks";
-import { selectCurrentTabs, selectTabs } from "../store/tab/selectors";
+import { selectCurrentTabs, selectOpenTabs, selectTabs } from "../store/tab/selectors";
 import { getTab } from "../utils/tab/manageTab";
 import { useNavigate } from "react-router-dom";
-import { Button, Menu, MenuProps, Typography } from "antd";
-import {
-  CalendarOutlined,
-  FileTextOutlined,
-  ApartmentOutlined,
-  ReadOutlined,
-  FormOutlined,
-  ArrowRightOutlined
-} from "@ant-design/icons";
-import { setCurrentTabs, Tab, PermissionType } from "../store/tab/slice";
+import { Button, Menu, MenuProps } from "antd";
+import { CalendarOutlined, FileTextOutlined, ApartmentOutlined, ReadOutlined, FormOutlined } from "@ant-design/icons";
+import { setTabs, setCurrentTabs, setOpenTabs, Tab, PermissionType } from "../store/tab/slice";
 import { useDispatch } from "react-redux";
 import type { CSSProperties } from "react";
 import { useMemo, useState, useEffect } from "react";
-import { setTabs } from "../store/tab/slice";
 
 const tabTypeIcon = (type: string | undefined):any => {
   switch(type) {
@@ -33,7 +25,8 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const tabs = useAppSelector(selectTabs);
-  const selectedTabs = useAppSelector(selectCurrentTabs);
+  const currentTabs = useAppSelector(selectCurrentTabs);
+  const openTabs = useAppSelector(selectOpenTabs);
 
   // Initialize tabs if undefined
   const [lastRefetchTabs, setLastRefetchTabs] = useState<number>(-1);
@@ -52,24 +45,28 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties
     setLastRefetchTabs(-1);
   }, [queryTabs, lastRefetchTabs]);
 
+  // Initialize handle open change
+  const handleOpenChange = (nextOpenKeys:string[]) => {
+    dispatch(setOpenTabs(nextOpenKeys));
+    if(!nextOpenKeys.length) return;
+    const tab = getTab(tabs, nextOpenKeys.at(-1));
+    if (!tab) return;
+    dispatch(setCurrentTabs(tab));
+    navigate(`/${tab.path}`);
+  };
+
   // Initialize on select tab action
   const onSelect = (key: string) => {
     const tab = getTab(tabs, key);
     if (!tab) return;
-    setSelectedButtonKey(null);
     dispatch(setCurrentTabs(tab));
     navigate(`/${tab.path}`);
   };
 
   // Initialize edit tab form action
-  const [selectedButtonKey, setSelectedButtonKey] = useState<string | null>(null);
   const onEditTab = (e: any, tab: Tab) => {
     e.preventDefault();
     e.stopPropagation();
-    // Set current tabs to edited tab
-    dispatch(setCurrentTabs(tab));
-    // Active button color
-    setSelectedButtonKey(tab['@id'] ?? null);
     navigate(`/form/tab/${tab.id}`);
   }
 
@@ -77,7 +74,7 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties
   const tabsToMenuItem = (tabs: Tab[], isTree: boolean, route?: string): NonNullable<MenuProps["items"]> => (
     tabs.map((tab, key) => ({
       icon: tabTypeIcon(tab.type),
-      key: (isTree && tab.children && Object.keys(tab.children).length > 0 ? 'cat-' : '')+(tab['@id'] ?? `tab-${key}`),
+      key: tab['@id'] ?? `tab-${key}`,
       label: <>
         { t(tab.name, {}, tab.defaultName ?? undefined) }
         { tab.permission === PermissionType.MANAGE && <Button
@@ -85,36 +82,41 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; style?: CSSProperties
           shape="circle"
           size="small"
           icon={<FormOutlined />}
-          type={selectedButtonKey === tab['@id'] ? "primary" : "default"} /> }
+          type={currentTabs.at(-1) === `/form/tab/${tab.id}` ? "primary" : "default"} /> }
       </>,
       ...(isTree && tab.children && Object.keys(tab.children).length > 0 ? {
-        children: [
-          { // Parent tab can be used as tab
-            icon: <ArrowRightOutlined />,
-            key: tab['@id'] ?? `tab-${key}`,
-            label: <Typography className="sub-menu">{t(tab.name, {}, tab.defaultName ?? undefined)}</Typography>
-          }, 
-          ...tabsToMenuItem(Object.values(tab.children), isTree, `${route}/${tab.route}`)
-        ],
+        children: tabsToMenuItem(Object.values(tab.children), isTree, `${route}/${tab.route}`),
       } :  {}),
     })
   ));
   
+  // Default parent tab
+  const [parentTab, setParentTab] = useState<string|undefined>(undefined);
+  useEffect(() => {
+    // Set parent tab for right menu
+    if (isTopMenu || !currentTabs.length || !tabs) return;
+    let parentId = currentTabs.at(0);
+    if (!parentId || !tabs[parentId]) return;
+    console.log('onEditTab', currentTabs.at(0));
+    setParentTab(parentId);
+  }, [currentTabs]);
+
   // Create tabs list for menu
   const menu = useMemo(() => {
     if (!tabs || !Object.keys(tabs).length) return [];
-    const parent = isTopMenu ? undefined : Object.values(tabs).find((tab: Tab) => selectedTabs.includes(tab['@id']));
+    const parent = parentTab && tabs[parentTab] ? tabs[parentTab] : undefined;
     const tabsDefault = parent ? (parent?.children ?? {}) : (isTopMenu ? tabs : undefined);
 
     return tabsDefault ? tabsToMenuItem(Object.values(tabsDefault), !isTopMenu, parent ? parent?.route : '') : [];
-  }, [tabs, selectedTabs, isTopMenu]);
+  }, [tabs, currentTabs, isTopMenu, parentTab]);
 
   return menu && <Menu
     theme="dark"
     mode={ props.mode }
     onSelect={({ key }) => onSelect(key)}
-    selectedKeys={ selectedTabs }
-    defaultOpenKeys={ selectedTabs }
+    selectedKeys={ currentTabs }
+    openKeys={ openTabs }
+    onOpenChange={ handleOpenChange }
     items={ menu }
     style={ props.style }
   />;

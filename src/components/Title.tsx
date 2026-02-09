@@ -4,6 +4,9 @@ import { useTranslate } from "@refinedev/core";
 import { useNavigate } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
+import { useAppSelector } from "../store/hooks";
+import { selectCurrentTabs } from "../store/tab/selectors";
+import { selectCurrentUser } from "../store/auth/selectors";
 
 const styles: Record<string, React.CSSProperties> = {
   title: {
@@ -26,21 +29,26 @@ const styles: Record<string, React.CSSProperties> = {
 export function Title({level = 1}: {level?: 1 | 2 | 3 | 4 | undefined}) {
   const t = useTranslate();
   const navigate = useNavigate();
+  const selectedTabs = useAppSelector(selectCurrentTabs);
+  const currentUser = useAppSelector(selectCurrentUser);
 
   return (
     <Typography.Title level={level} style={ styles.title }>
       <FaDice style={ styles.icon } />
       {t("app.title", {}, "Title")}
-      <Button
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          navigate(`/form/tab`);
-        }}
-        style={ styles.link }
-        size="small"
-        shape="circle"
-        icon={<PlusOutlined />} />
+      { currentUser &&
+        <Button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            navigate(`/form/tab`);
+          }}
+          style={ styles.link }
+          size="small"
+          shape="circle"
+          icon={<PlusOutlined />}
+          type={selectedTabs.at(-1) === `/form/tab` ? "primary" : "default"} />
+      } 
     </Typography.Title>
   );
 }

@@ -24,12 +24,14 @@ export type Tab = {
 
 export type FormState = {
   currentTabs: string[];
+  openTabs: string[];
   tabs: Record<string, Tab> | null;
 };
 
 const initialState: FormState = {
   tabs: null,
   currentTabs: [],
+  openTabs: [],
 };
 
 const getTabs = (tabs: Tab[], path: string, parent: string|undefined): Record<string, Tab> => {
@@ -68,16 +70,22 @@ const tabSlice = createSlice({
     clearTabs: (state) => {
       state.tabs = null;
       state.currentTabs = [];
+      state.openTabs = [];
     },
-    setCurrentTabs: (state, action: PayloadAction<Tab | null>) => {
-      if (state.tabs && action.payload && action.payload['@id']) {
+    setCurrentTabs: (state, action: PayloadAction<Tab|null|string>) => {
+      if (state.tabs && action.payload && typeof action.payload === 'object' && action.payload['@id']) {
         state.currentTabs = getCurrentsRec(state.tabs, action.payload['@id']) ?? [];
+      } else if (action.payload && typeof action.payload === 'string') {
+        state.currentTabs = [action.payload];
       } else {
         state.currentTabs = [];
       }
     },
+    setOpenTabs: (state, action: PayloadAction<null|string[]>) => {
+      state.openTabs = action.payload ?? [];
+    },
   },
 });
 
-export const { setTabs, clearTabs, setCurrentTabs } = tabSlice.actions;
+export const { setTabs, clearTabs, setCurrentTabs, setOpenTabs } = tabSlice.actions;
 export default tabSlice.reducer;

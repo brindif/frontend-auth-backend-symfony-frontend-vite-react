@@ -17,8 +17,8 @@ export function Layout() {
       <RouteChangeListener
         onPathChange={(pathname) => {
           const tab = getTabFromRoute(tabs, pathname);
-          if (!tab && currentTabs.length>0) {
-            dispatch(setCurrentTabs(null));
+          if (!tab && currentTabs.at(-1) !== pathname) {
+            dispatch(setCurrentTabs(pathname));
           } else if (tab && currentTabs.at(-1) !== tab['@id']) {
             dispatch(setCurrentTabs(tab));
           }
