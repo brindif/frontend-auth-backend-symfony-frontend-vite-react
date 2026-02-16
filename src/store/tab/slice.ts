@@ -38,10 +38,13 @@ export enum ElementType {
 export type ContentType = {
   type: ElementType;
   method: MethodType;
-  list: string;
-  path: string;
+  get: string;
+  put: string;
+  patch: string;
+  post: string;
   values?: Record<string, any>;
   updated?: boolean;
+  loaded?: boolean;
   position?: number;
 };
 

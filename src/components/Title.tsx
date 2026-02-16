@@ -1,7 +1,7 @@
 import { Typography } from "antd";
 import { FaDice } from "react-icons/fa";
 import { useTranslate } from "@refinedev/core";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../components/routing/RouteChangeConfirm";
 import { PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useAppSelector } from "../store/hooks";

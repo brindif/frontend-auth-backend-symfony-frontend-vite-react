@@ -8,11 +8,13 @@ import { useDispatch } from "react-redux";
 import { clearTabs } from "../../store/tab/slice";
 import { clearList } from "../../store/form/slice";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../../components/routing/RouteChangeConfirm";
+import { useForm } from "@refinedev/antd";
 
 export function TabCreatePage () {
   // Initialize form field
   const fullSchema = useAppSelector((state: RootState) => selectSchema(state, '/api/tab', 'post'));
+  const { form, formProps } = useForm();
 
   // Change tabs list in redux
   const navigate = useNavigate();
@@ -48,7 +50,7 @@ export function TabCreatePage () {
   };
 
   return (
-    <Form className="content" onFinish={(formData) => onFinish({ formData })} layout="vertical">
+    <Form {...formProps} className="content" onFinish={(formData) => onFinish({ formData })} layout="vertical">
       <Typography.Title level={3}>{ t("admin.tab.title", {}, "Create Tab") }</Typography.Title>
 
       {fullSchema &&

@@ -27,7 +27,10 @@ createRoot(document.getElementById('root')).render(
         }}>
           <AntdApp>
             <Refine
-              options={{ disableTelemetry: true }}
+              options={{
+                disableTelemetry: true,
+                warnWhenUnsavedChanges: true,
+              }}
               routerProvider={routerProvider}
               dataProvider={makeDataProvider(api, API_URL)}
               authProvider={authProvider}

@@ -10,7 +10,7 @@ form.content {
 form.ant-form h3 {
   font-size: 24px;
   line-height: 32px;
-  margin-bottom: 32px;
+  margin: 10px 0px 32px 0px;
   color: var(--ant-color-primary-text-hover);
 }
 
@@ -20,12 +20,6 @@ ul.ant-menu button {
 
 ul.ant-menu .sub-menu {
   color: var(--ant-color-text-description);
-}
-
-form.ant-form .button {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 30px;
 }
 
 /* App */

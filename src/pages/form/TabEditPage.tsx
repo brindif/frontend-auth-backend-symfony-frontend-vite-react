@@ -2,7 +2,7 @@ import { useCustom, useTranslate, useCustomMutation } from "@refinedev/core";
 import { selectSchema } from '../../store/form/selectors';
 import { useAppSelector } from "../../store/hooks";
 import type { RootState } from "../../store/store";
-import { App, Form, Typography, Button } from "antd";
+import { App, Form, Typography, Button, Flex } from "antd";
 import { FormItemsFromSchema } from "../../components/form/FormItemsFromSchema";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -10,9 +10,11 @@ import { useDispatch } from "react-redux";
 import { clearTabs } from "../../store/tab/slice";
 import { clearList } from "../../store/form/slice";
 import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../../components/routing/RouteChangeConfirm";
 import { selectTabs } from "../../store/tab/selectors";
 import { getTab } from "../../utils/tab/manageTab";
+import { useDeleteConfirm } from "../../components/Modal";
+import { useForm } from "@refinedev/antd";
 
 export function TabEditPage () {
   const { id } = useParams();
@@ -20,7 +22,7 @@ export function TabEditPage () {
   
   // Initialize form field
   const fullSchema = useAppSelector((state: RootState) => selectSchema(state, '/api/tab/{id}', 'put'));
-  const [form] = Form.useForm();
+  const { form, formProps } = useForm();
   const content = fullSchema ? (
     <FormItemsFromSchema 
       schema={fullSchema} 
@@ -67,6 +69,7 @@ export function TabEditPage () {
   };
 
   // Detele tab
+  const { showDeleteConfirm } = useDeleteConfirm();
   const onDelete = () => {
     postQuery({
       url: `/tab/${id}`,
@@ -86,7 +89,7 @@ export function TabEditPage () {
 
   return (
     <Form
-      form={form}
+      {...formProps}
       className="content"
       onFinish={(formData) => onFinish({ formData })}
       layout="vertical">
@@ -96,14 +99,14 @@ export function TabEditPage () {
 
       { content }
 
-      <Typography className="button">
+      <Flex justify="space-between" align="center">
         <Button type="primary" icon={<SaveOutlined />} htmlType="submit">
           { t("tab.button.submit", {}, "Submit") }
         </Button>
-        <Button type="primary" onClick={() => onDelete()} danger icon={<DeleteOutlined />}>
+        <Button type="primary" onClick={() => showDeleteConfirm(onDelete)} danger icon={<DeleteOutlined />}>
           { t("tab.button.delete", {}, "Delete") }
         </Button>
-      </Typography>
+      </Flex>
     </Form>
   );
 };

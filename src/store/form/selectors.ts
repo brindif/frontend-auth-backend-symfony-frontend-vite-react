@@ -9,7 +9,8 @@ export const selectSchema = (state: RootState, path: string, method: string) => 
         return undefined;
     try {
       const requestBody = state.form.openApi.paths[path][method].requestBody;
-      const schemaRef = requestBody.content['application/json'].schema.$ref;
+      const ContentRef = requestBody.content[method === 'patch' ? 'application/merge-patch+json' : 'application/json'];
+      const schemaRef = ContentRef.schema.$ref;
       const schemaName = schemaRef.split("/").pop();
       const fullSchema = state.form.openApi.components.schemas[schemaName];
       return fullSchema;

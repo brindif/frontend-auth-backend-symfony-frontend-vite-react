@@ -2,12 +2,12 @@ import { useCustom, useTranslate } from "@refinedev/core";
 import { useAppSelector } from "../store/hooks";
 import { selectCurrentTabs, selectOpenTabs, selectTabs } from "../store/tab/selectors";
 import { getTab } from "../utils/tab/manageTab";
-import { useNavigate } from "react-router-dom";
 import { Button, Menu, MenuProps } from "antd";
 import { CalendarOutlined, FileTextOutlined, ApartmentOutlined, ReadOutlined, FormOutlined } from "@ant-design/icons";
-import { setTabs, setCurrentTabs, setOpenTabs, Tab, PermissionType } from "../store/tab/slice";
+import { setTabs, setOpenTabs, Tab, PermissionType } from "../store/tab/slice";
 import { useDispatch } from "react-redux";
 import { useMemo, useState, useEffect } from "react";
+import { useNavigate } from "../components/routing/RouteChangeConfirm";
 
 const tabTypeIcon = (type: string | undefined):any => {
   switch(type) {
@@ -46,18 +46,18 @@ export function MenuApp(props: { mode?: MenuProps["mode"]; id?: string; }) {
 
   // Initialize handle open change
   const handleOpenChange = (nextOpenKeys:string[]) => {
-    dispatch(setOpenTabs(nextOpenKeys));
     if(!nextOpenKeys.length) return;
     const tab = getTab(tabs, nextOpenKeys.at(-1));
     if (!tab) return;
     navigate(`/${tab.path}`);
+    dispatch(setOpenTabs(nextOpenKeys));
   };
 
   // Initialize on select tab action
   const onSelect = (key: string) => {
     const tab = getTab(tabs, key);
     if (!tab) return;
-    navigate(`/${tab.path}`);
+    navigate(tab.path);
   };
 
   // Initialize edit tab form action

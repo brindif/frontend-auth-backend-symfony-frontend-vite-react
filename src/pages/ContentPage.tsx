@@ -10,14 +10,6 @@ import { useState, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { ContentForm } from "../components/form/ContentForm";
 
-export type QueryType = {
-  type: ElementType;
-  url: string;
-  path: string;
-  loaded: boolean;
-  values: any[]|null;
-};
-
 export function ContentPage() {
   const t = useTranslate();
   const dispatch = useDispatch();
@@ -43,10 +35,9 @@ export function ContentPage() {
   const [element, setElement] = useState<ContentType|undefined>(undefined);
   const onChange = (value: ElementType, option: any) => {
     setElement({
+      ...option,
       type: value,
       method: MethodType.POST,
-      path: option.post,
-      list: option.get,
     });
   };
   const onAdd = (e:any) => {
@@ -60,14 +51,16 @@ export function ContentPage() {
     if (!tab) return;
     if (contents.length) dispatch(clearContents());
     setQueries(pageElements.map((pageElement) => ({
-      url: pageElement.get,
-      path: pageElement.put,
-      loaded: false,
-      values: null,
+      get: pageElement.get,
+      post: pageElement.post,
+      put: pageElement.put,
+      patch: pageElement.patch,
       type: pageElement.value,
+      method: MethodType.PATCH,
+      loaded: false,
     })));
   }, [tab]);
-  const [queries, setQueries] = useState<QueryType[]>([]);
+  const [queries, setQueries] = useState<ContentType[]>([]);
   const [lastQuery, setLastQuery] = useState<{dataUpdatedAt: number; url: string}>({ dataUpdatedAt: -1, url: '' });
   const { query } = useCustom({
     url: lastQuery.url,
@@ -83,13 +76,13 @@ export function ContentPage() {
     let unloaded:string|null = null;
     let updatedQueries = [...queries];
     updatedQueries = updatedQueries.map((pageElement) => {
-      if (pageElement.url === lastQuery.url && query.dataUpdatedAt){
+      if (pageElement.get === lastQuery.url && query.dataUpdatedAt){
         // Load data in query
         pageElement.values = query.data?.data?.member;
       }
       if (!pageElement.loaded && unloaded === null){
         // Launch query
-        unloaded = pageElement.url;
+        unloaded = pageElement.get;
         pageElement.loaded = true;
       }
       return pageElement;
@@ -100,18 +93,15 @@ export function ContentPage() {
     // Initialize list of contents whene all page elements are loaded
     if (unloaded) return;
     dispatch(setContents(
-      updatedQueries.reduce((acc:ContentType[], pageElement) => {
+      updatedQueries.reduce((acc:ContentType[], pageElement: ContentType) => {
         if (!pageElement.values || !pageElement.values.length) return acc;
         return [
           ...acc,
-          ...pageElement.values.map(content => ({
-            type: pageElement.type,
-            method: MethodType.PUT,
-            path: pageElement.path,
+          ...pageElement.values.map((content: any) => ({
+            ...pageElement,
             values: content,
             updated: false,
             position: content.position ?? 0,
-            list: pageElement.url,
           })),
         ];
       }, []).sort((a:ContentType, b:ContentType) => (a.position ?? 0) - (b.position ?? 0))

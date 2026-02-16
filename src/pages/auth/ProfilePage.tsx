@@ -8,6 +8,7 @@ import { setCurentUser } from "../../store/auth/slice";
 import { store } from "../../store/store";
 import { useForgotPassword } from "@refinedev/core";
 import { TYPE_PASSWORD, TYPE_EMAIL } from "../../api/auth/updateRequestApi";
+import { useForm } from "@refinedev/antd";
 
 export type UpdateUserFormValues = {
   name: string;
@@ -17,7 +18,7 @@ export function ProfilePage() {
   const MIN_NAME = 2;
   const MAX_NAME = 100;
 
-  const [form] = Form.useForm<UpdateUserFormValues>();
+  const { form, formProps } = useForm();
 
   const { message } = App.useApp();
   const t = useTranslate();
@@ -49,6 +50,7 @@ export function ProfilePage() {
   
   return (
     <Form
+      {...formProps}
       className='content'
       form={form}
       layout="vertical"
