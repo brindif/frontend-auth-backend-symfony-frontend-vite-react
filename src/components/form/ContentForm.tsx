@@ -72,39 +72,44 @@ export function ContentForm ({ index, element }: Props) {
   const dispatch = useDispatch();
   const [refreshContent, setRefreshContent] = useState<any>(false);
   useEffect(() => {
-    if (refreshContent) {
-      dispatch(setContents(contents.reduce((acc:ContentType[], content:ContentType, currentIndex: number ) => {
-        if (currentIndex !== index) {
-          return [ ...acc, content ];
-        }
-        // Method delete - remove
-        else if (refreshContent?.method === MethodType.DELETE) {
+    if (!refreshContent) return;
+    let alwaysUpdated = false;
+    dispatch(setContents(contents.reduce((acc:ContentType[], content:ContentType, currentIndex: number ) => {
+      if (currentIndex !== index) {
+        if (content.updated) alwaysUpdated = true;
+        return [ ...acc, content ];
+      }
+      // Method delete - remove
+      else if (refreshContent?.method === MethodType.DELETE) {
+        return acc;
+      }
+      // Method post - change to put, save values
+      else if (content.method === MethodType.POST) {
+        return [
+          ...acc,
+          {
+            ...content,
+            method: MethodType.PATCH,
+            values: refreshContent,
+            position: refreshContent?.position,
+            updated: false,
+          }
+        ];
+      }
+      // Method put - save values and remove if tab changed
+      else if (element.method === MethodType.PUT || element.method === MethodType.PATCH) {
+        if (refreshContent?.tab !== element.values?.tab) {
           return acc;
         }
-        // Method post - change to put, save values
-        else if (content.method === MethodType.POST) {
-          return [
-            ...acc,
-            {
-              ...content,
-              method: MethodType.PATCH,
-              values: refreshContent,
-              position: refreshContent?.position,
-              updated: false,
-            }
-          ];
-        }
-        // Method put - save values and remove if tab changed
-        else if (element.method === MethodType.PUT || element.method === MethodType.PATCH) {
-          if (refreshContent?.tab !== element.values?.tab) {
-            return acc;
-          }
-          return [ ...acc, { ...content, position: refreshContent?.position ?? 0, values: refreshContent } ];
-        }
-        return acc;
-      }, []).sort((a:ContentType, b:ContentType) => (a.position ?? 0) - (b.position ?? 0))));
-      setRefreshContent(false);
-    }
+        return [
+          ...acc,
+          { ...content, position: refreshContent?.position ?? 0, values: refreshContent, updated: false }
+        ];
+      }
+      return acc;
+    }, []).sort((a:ContentType, b:ContentType) => (a.position ?? 0) - (b.position ?? 0))));
+    setRefreshContent(false);
+    if (!alwaysUpdated) setWarnWhen(false);
   }, [refreshContent]);
 
   // Validate form
@@ -122,7 +127,10 @@ export function ContentForm ({ index, element }: Props) {
     postQuery({
       url: getUrl(),
       method: element.method,
-      values: formData
+      values: formData,
+      config: element.method === MethodType.PATCH ? {
+        headers: { "Content-Type": "application/merge-patch+json" },
+      } : {},
     }, {
       onSuccess:(data: any) => {
         setRefreshContent(data?.data);

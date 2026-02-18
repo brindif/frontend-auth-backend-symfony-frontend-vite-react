@@ -5,6 +5,7 @@ import { extractFormat } from "../../utils/form/openApiFormat";
 import { extractRules } from "../../utils/form/openApiRules";
 import { XListSelect } from "./XListSelect";
 import { XJoinList } from "./XJoinList";
+import Editor from "../note/Editor";
 
 type FormItemsFromSchemaType = {
   schema: ObjectSchema;
@@ -54,8 +55,11 @@ export function FormItemsFromSchema({ schema, form, joinList}: FormItemsFromSche
                 break;
               }
             }
+          case "editor":
+            input=<Editor />;
+            break;
           case "string":
-            input=<Input placeholder={fieldSchema.example ?? undefined} />
+            input=<Input placeholder={fieldSchema.example ?? undefined} />;
             break;
         }
         return (item ? item :

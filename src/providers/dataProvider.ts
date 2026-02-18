@@ -30,8 +30,8 @@ export const makeDataProvider = (
     });
 
     return {
-      data: data["hydra:member"] ?? data,
-      total: data["hydra:totalItems"] ?? (data?.length ?? 0),
+      data: data["member"] ?? data,
+      total: data["totalItems"] ?? (data?.length ?? 0),
     };
   },
 
@@ -46,7 +46,15 @@ export const makeDataProvider = (
   },
 
   update: async ({ resource, id, variables }) => {
-    const { data } = await httpClient.patch(`/${resource}/${id}`, variables);
+    const { data } = await httpClient.patch(
+      `/${resource}/${id}`,
+      variables,
+      {
+        headers: {
+          'Content-Type': 'application/merge-patch+json',
+        },
+      },
+    );
     return { data };
   },
 

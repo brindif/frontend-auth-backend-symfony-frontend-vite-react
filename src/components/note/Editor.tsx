@@ -1,24 +1,30 @@
-import { useEditor, EditorContent, EditorContext } from '@tiptap/react'
-import { FloatingMenu, BubbleMenu } from '@tiptap/react/menus'
-import StarterKit from '@tiptap/starter-kit'
-import { useMemo } from 'react'
+import { useEditor, EditorContent, EditorContext, useEditorState } from '@tiptap/react';
+import { FloatingMenu, BubbleMenu } from '@tiptap/react/menus';
+import StarterKit from '@tiptap/starter-kit';
+import { useMemo } from 'react';
+import { TextStyleKit } from '@tiptap/extension-text-style';
+import { MenuBar } from './MenuBar.tsx';
+import "./editor.scss";
 
-const Editor = () => {
+const Editor = ({ value = '', onChange }: { value?: string; onChange?: (html: string) => void }) => {
   const editor = useEditor({
-    extensions: [StarterKit], // define your extension array
-    content: '<p>Hello World!</p>', // initial content
-  })
+    extensions: [TextStyleKit, StarterKit],
+    content: value,
+    onUpdate: ({ editor }) => {
+      onChange?.(editor.getHTML())
+    },
+  });
 
-  // Memoize the provider value to avoid unnecessary re-renders
-  const providerValue = useMemo(() => ({ editor }), [editor])
+  const providerValue = useMemo(() => ({ editor }), [editor]);
 
   return (
     <EditorContext.Provider value={providerValue}>
-      <EditorContent editor={editor} />
-      <FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>
-      <BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>
+      <MenuBar editor={editor} />
+      <EditorContent className="tiptap" editor={editor} />
     </EditorContext.Provider>
-  )
+  );
+  /*<FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>
+  <BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>*/
 }
 
-export default Editor
+export default Editor;
