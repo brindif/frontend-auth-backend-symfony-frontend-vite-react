@@ -7,6 +7,7 @@ import { ValidateUpdateEmailPage } from "./pages/auth/ValidateUpdateEmailPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ContentPage } from "./pages/ContentPage";
 import { ProfilePage } from "./pages/auth/ProfilePage";
+import { UsersPage } from "./pages/form/UsersPage";
 import { TabCreatePage } from "./pages/form/TabCreatePage";
 import { TabEditPage } from "./pages/form/TabEditPage";
 import { useLocation } from "react-router-dom";
@@ -17,6 +18,7 @@ export default function Router() {
   return (
     <Routes>
       <Route element={<Layout />}>
+        <Route path="/users" element={<UsersPage />} />
         <Route path="/account" element={<ProfilePage />} />
         <Route path="/update-password" element={<UpdatePasswordPage />} />
         <Route path="/validate-update-email" element={<ValidateUpdateEmailPage />} />

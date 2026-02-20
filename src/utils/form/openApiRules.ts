@@ -1,18 +1,17 @@
-import { ObjectSchema } from "./openApiTypes";
+import { OpenApiElement } from "./openApiTypes";
 import { extractFormat } from "./openApiFormat";
 import type { Rule as RuleType } from "antd/es/form";
 
-export function extractRules(schema:ObjectSchema, field:string, t:any): RuleType[] {
+export function extractRules(fieldSchema:OpenApiElement, required: boolean, t:any): RuleType[] {
   let rules:RuleType[]=[];
 
   // Requeired rule
-  if(schema.required && schema.required.includes(field)) {
+  if(required) {
     rules.push({ required: true, message: t("form.error.required", {}, "Required") });
     rules.push({ whitespace: true, message: t("form.error.whitespace", {}, "Not blank") });
   }
 
-  const format = extractFormat(schema.properties[field]);
-  const fieldSchema = schema.properties[field];
+  const format = extractFormat(fieldSchema);
   if (!format || !fieldSchema) {
     return rules;
   }

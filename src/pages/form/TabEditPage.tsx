@@ -1,4 +1,4 @@
-import { useCustom, useTranslate, useCustomMutation } from "@refinedev/core";
+import { useTranslate, useCustomMutation } from "@refinedev/core";
 import { selectSchema } from '../../store/form/selectors';
 import { useAppSelector } from "../../store/hooks";
 import type { RootState } from "../../store/store";

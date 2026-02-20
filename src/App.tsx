@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useTranslate } from "@refinedev/core";
 import { Link } from "react-router-dom";
-import { Button, Breadcrumb, Layout, Menu, Typography, Tooltip } from "antd";
+import { Button, Breadcrumb, Layout, Tooltip } from "antd";
 import { FiLogIn, FiUser, FiMenu, FiX } from "react-icons/fi";
+import { TeamOutlined } from '@ant-design/icons';
 import { LogoutButton } from "./pages/auth/LogoutButton"
 import { Title } from "./components/Title";
 import Router from "./Router";
@@ -42,6 +43,14 @@ export default function DashboardPage() {
         }
         { user !== null && 
           <>
+            <Link to="/users" id="button">
+              <Tooltip title={t("menu.account.tooltip", {}, "Account")}>
+                <Button
+                  shape="circle"
+                  icon={<TeamOutlined />}
+                  type={selectedTabs.at(-1) === `/account` ? "primary" : "default"} />
+              </Tooltip>
+            </Link>
             <Link to="/account" id="button">
               <Tooltip title={t("menu.account.tooltip", {}, "Account")}>
                 <Button

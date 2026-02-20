@@ -14,6 +14,7 @@ export type OpenApiElement =  {
   enum?: Array<string | number | boolean | null>;
   "x-list"?: XList;
   "x-join"?: ObjectSchema;
+  "x-array"?: OpenApiElement;
   // Numeric
   minimum?: number;
   maximum?: number;

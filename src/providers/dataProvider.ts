@@ -8,12 +8,12 @@ import type { AxiosInstance } from "axios";
 type Params = {
   sorters?: CrudSorting;
   filters?: CrudFilters;
-  pagination?: { current?: number; pageSize?: number };
+  pagination?: { currentPage?: number; pageSize?: number };
 };
 
 const buildQuery = ({ pagination }: Params) => {
   const query: Record<string, any> = {};
-  if (pagination?.current) query.page = pagination.current;
+  if (pagination?.currentPage) query.page = pagination.currentPage;
   if (pagination?.pageSize) query.itemsPerPage = pagination.pageSize;
   return query;
 };
@@ -46,15 +46,7 @@ export const makeDataProvider = (
   },
 
   update: async ({ resource, id, variables }) => {
-    const { data } = await httpClient.patch(
-      `/${resource}/${id}`,
-      variables,
-      {
-        headers: {
-          'Content-Type': 'application/merge-patch+json',
-        },
-      },
-    );
+    const { data } = await httpClient.put(`/${resource}/${id}`, variables);
     return { data };
   },
 
