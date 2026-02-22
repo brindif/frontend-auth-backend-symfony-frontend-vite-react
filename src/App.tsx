@@ -3,16 +3,16 @@ import { useTranslate } from "@refinedev/core";
 import { Link } from "react-router-dom";
 import { Button, Breadcrumb, Layout, Tooltip } from "antd";
 import { FiLogIn, FiUser, FiMenu, FiX } from "react-icons/fi";
-import { TeamOutlined } from '@ant-design/icons';
+import { TeamOutlined, DatabaseOutlined } from '@ant-design/icons';
 import { LogoutButton } from "./pages/auth/LogoutButton"
 import { Title } from "./components/Title";
 import Router from "./Router";
-import RouterUnauthed from "./RouterUnauthed";
 import { useAppSelector } from "./store/hooks";
 import { selectCurrentUser } from "./store/auth/selectors";
 import { MenuApp } from "./components/MenuApp";
 import { selectCurrentTabs, selectTabs } from "./store/tab/selectors";
 import { getTab } from "./utils/tab/manageTab";
+import { RoleType } from "./store/auth/slice";
 import "./app.css";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -43,14 +43,26 @@ export default function DashboardPage() {
         }
         { user !== null && 
           <>
-            <Link to="/users" id="button">
-              <Tooltip title={t("menu.account.tooltip", {}, "Account")}>
-                <Button
-                  shape="circle"
-                  icon={<TeamOutlined />}
-                  type={selectedTabs.at(-1) === `/account` ? "primary" : "default"} />
-              </Tooltip>
-            </Link>
+            {(!user?.roles.includes(RoleType.guest) || user?.roles?.length > 1) &&
+              <Link to="/schemas" id="button">
+                <Tooltip title={t("menu.schemas.tooltip", {}, "Schemas")}>
+                  <Button
+                    shape="circle"
+                    icon={<DatabaseOutlined />}
+                    type={selectedTabs.at(-1) === `/schemas` ? "primary" : "default"} />
+                </Tooltip>
+              </Link>
+            }
+            {user?.roles.includes(RoleType.admin) &&
+              <Link to="/users" id="button">
+                <Tooltip title={t("menu.users.tooltip", {}, "Users")}>
+                  <Button
+                    shape="circle"
+                    icon={<TeamOutlined />}
+                    type={selectedTabs.at(-1) === `/users` ? "primary" : "default"} />
+                </Tooltip>
+              </Link>
+            }
             <Link to="/account" id="button">
               <Tooltip title={t("menu.account.tooltip", {}, "Account")}>
                 <Button
@@ -86,12 +98,7 @@ export default function DashboardPage() {
             })} />
           </Layout>
           <Content>
-            { user === null &&
-              <RouterUnauthed />
-            }
-            { user !== null &&
-              <Router />
-            }
+            <Router />
           </Content>
         </Layout>
       </Layout>

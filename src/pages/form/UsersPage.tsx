@@ -14,7 +14,7 @@ export function UsersPage () {
   const users = useAppSelector((state) => selectList(state, '/users'));
   
   // Select users
-  const [pageSize, setPageSize] = useState<number>(4);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [lastRefetch, setLastRefetch] = useState<number>(-1);
   const { query } = useList({
@@ -47,7 +47,7 @@ export function UsersPage () {
 
   return (
     <Layout id="content">
-      <Typography.Title level={1}>
+      <Typography.Title level={3}>
         { t('app.form.users', {}, 'Users') }
       </Typography.Title>
       <Flex align="top" wrap>

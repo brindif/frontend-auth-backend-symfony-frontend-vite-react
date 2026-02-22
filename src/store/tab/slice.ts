@@ -31,8 +31,7 @@ export enum MethodType {
 
 export enum ElementType {
   NOTE = 'note',
-  CALENDAR = 'calendar',
-  TREE = 'tree',
+  SCHEMA = 'schema',
 }
 
 export type ContentType = {

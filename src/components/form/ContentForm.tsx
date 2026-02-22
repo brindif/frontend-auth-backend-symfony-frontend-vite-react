@@ -3,7 +3,7 @@ import { selectSchema } from '../../store/form/selectors';
 import { useAppSelector } from "../../store/hooks";
 import type { RootState } from "../../store/store";
 import { App, Form, Typography, Button, Flex, Tag } from "antd";
-import { FormItemsFromSchema } from "./FormItemsFromSchema";
+import { FormItemsFromSchema } from "../generator/FormItemsFromSchema";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setContents } from "../../store/tab/slice";

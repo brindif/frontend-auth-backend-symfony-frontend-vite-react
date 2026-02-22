@@ -11,61 +11,61 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteConfirm } from "../Modal";
 import { useForm } from "@refinedev/antd";
 import { useWarnAboutChange } from "@refinedev/core";
-import { FiUser } from "react-icons/fi";
+import { DatabaseOutlined } from '@ant-design/icons';
 import { selectList } from "../../store/form/selectors";
 import { addList } from "../../store/form/slice";
 import { useDispatch } from "react-redux";
 
-export function UserForm ({ index }: {index: number}) {
+export function SchemaForm ({ index }: {index: number}) {
   const queryCache = useQueryClient();
   const t = useTranslate();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { form, formProps } = useForm();
-  const users = useAppSelector((state) => selectList(state, '/users'));
+  const schemas = useAppSelector((state) => selectList(state, '/schemas'));
   const { warnWhen, setWarnWhen } = useWarnAboutChange();
 
   // Get API schema
-  const fullSchema = useAppSelector((state: RootState) => selectSchema(state, '/api/user/{id}', 'put'));
+  const fullSchema = useAppSelector((state: RootState) => selectSchema(state, '/api/schema/{id}', 'put'));
   const [content, setContent] = useState<any>(null);
-  const [user, setUser] = useState<any>(null);
+  const [schema, setSchema] = useState<any>(null);
 
   // Initialize form values
   useEffect(() => {
-    if (!users || !users[index] || (user && user['@id'] === users[index]['@id'])) return;
+    if (!schemas || !schemas[index] || (schema && schema['@id'] === schemas[index]['@id'])) return;
     form.resetFields();
-    form.setFieldsValue(users[index]);
+    form.setFieldsValue(schemas[index]);
     setContent(fullSchema ? (
       <FormItemsFromSchema 
         schema={fullSchema} 
-        form={users[index]['@id']}
+        form={schemas[index]['@id']}
       />
     ) : null);
-    setUser(users[index]);
-  }, [users]);
+    setSchema(schemas[index]);
+  }, [schemas]);
 
   // Validate form
   const { message } = App.useApp();
   const { mutate: updateQuery } = useUpdate();
   const onFinish = ({ formData }: any) => {
-    formData.roles = formData.roles.filter((role:string) => role != null && role !== '');
+    formData.tabs = formData.tabs.filter((tab:string) => tab != null && tab !== '');
     updateQuery({
-      resource: 'user',
-      id: user.id,
+      resource: 'schema',
+      id: schema.id,
       values: formData,
     }, {
       onSuccess:(data: any) => {
-        queryCache.removeQueries({ queryKey: ['/users'], exact: true });
+        queryCache.removeQueries({ queryKey: ['/schemas'], exact: true });
         let warn = false;
-        dispatch(addList({route: '/users', list: users.map(child => {
-          if (user['@id'] !== child['@id']) {
+        dispatch(addList({route: '/schemas', list: schemas.map(child => {
+          if (schema['@id'] !== child['@id']) {
             if (!warn && child.edited) warn = true;
             return child;
           }
           return data?.data;
         }) ?? []}));
         if (!warn) setWarnWhen(false);
-        setUser(data?.data);
+        setSchema(data?.data);
         message.success(t("content.success", {}, "Content updated successfully"), 10);
       },
       onError: (error: any) => {
@@ -79,16 +79,16 @@ export function UserForm ({ index }: {index: number}) {
   const { mutate: deleteQuery } = useDelete();
   const onDelete = () => {
     deleteQuery({
-      resource: 'user',
-      id: user.id,
-      values: {id: user.id},
+      resource: 'schema',
+      id: schema.id,
+      values: {id: schema.id},
     }, {
       onSuccess:(data: any) => {
-        queryCache.removeQueries({ queryKey: ['/users'], exact: true });
+        queryCache.removeQueries({ queryKey: ['/schemas'], exact: true });
         message.success(t("content.delete.success", {}, "Content delete successfully"), 10);
         let warn = false;
-        dispatch(addList({route: '/users', list: users.reduce((acc, child) => {
-          if (user['@id'] !== child['@id']) {
+        dispatch(addList({route: '/schemas', list: schemas.reduce((acc, child) => {
+          if (schema['@id'] !== child['@id']) {
             if (!warn && child.edited) warn = true;
             return [...acc, child];
           }
@@ -107,12 +107,12 @@ export function UserForm ({ index }: {index: number}) {
     if (!warnWhen) {
       setWarnWhen(true);
     }
-    if (!user.edited) {
-      dispatch(addList({route: '/users', list: users.map(child => {
-        if (user['@id'] !== child['@id']) return child;
-        return {...user, edited: true}
+    if (!schema.edited) {
+      dispatch(addList({route: '/schemas', list: schemas.map(child => {
+        if (schema['@id'] !== child['@id']) return child;
+        return {...schema, edited: true}
       }) ?? []}));
-      setUser({...user, ...changedValues, edited: true});
+      setSchema({...schema, ...changedValues, edited: true});
     }
   };
 
@@ -121,26 +121,26 @@ export function UserForm ({ index }: {index: number}) {
   return (
     <Form
       {...formProps}
-      key={`user_${index}`}
+      key={`schema_${index}`}
       onValuesChange={(changedValues, allValues) => onChange({ changedValues, allValues })}
       onFinish={(formData) => onFinish({ formData })}
       layout="vertical"
-      style={{width: '49%', margin: '0.5%'}}>
-      {user &&
+      style={{width: '100%', marginBottom: '10px'}}>
+      {schema &&
         <Card title={
           <Flex align="center" gap={10}>
-            <Avatar size={28} { ...(user.isVerified ? {className: 'active'} : {}) }><FiUser /></Avatar>
-            { user.email }
+            <Avatar size={28}><DatabaseOutlined /></Avatar>
+            { schema.name }
           </Flex>
         } extra={ <Flex align="center" gap={10}>
-          <Button htmlType="submit" icon={<SaveOutlined />} type="primary" disabled={!user.edited} />
+          <Button htmlType="submit" icon={<SaveOutlined />} type="primary" disabled={!schema.edited} />
           <Button type="primary" onClick={() => showDeleteConfirm(onDelete)} danger icon={<DeleteOutlined />} />
         </Flex> }>
           <Flex align="center" gap={10} wrap>
-            { Object.keys(user).map(field => !hiddenFields.includes(field) &&
+            { Object.keys(schema).map(field => !hiddenFields.includes(field) &&
               <Tag key={field} color="blue">
-                { t(`form.user.${field}`, {}, field) } :
-                { user[field] }
+                { t(`form.schema.${field}`, {}, field) } :
+                { schema[field] }
               </Tag>
             ) }
           </Flex>

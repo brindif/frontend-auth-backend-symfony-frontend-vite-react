@@ -1,9 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export enum RoleType {
+  admin = 'ROLE_ADMIN',
+  manager = 'ROLE_MANAGER',
+  user = 'ROLE_USER',
+  guest = 'ROLE_GUEST',
+}
+
 export type CurrentUserType = {
   name: string | null;
   email: string | null;
-  roles: Array<string> | [];
+  roles: Array<RoleType>;
 }
 
 export type AuthState = {

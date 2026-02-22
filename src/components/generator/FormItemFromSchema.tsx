@@ -5,7 +5,7 @@ import { extractFormat } from "../../utils/form/openApiFormat";
 import { extractRules } from "../../utils/form/openApiRules";
 import { XListSelect } from "./XListSelect";
 import { XJoinList } from "./XJoinList";
-import Editor from "../note/Editor";
+import Editor from "../editor/Editor";
 import { XArray } from "./XArray";
 
 type FormItemFromSchemaType = {
