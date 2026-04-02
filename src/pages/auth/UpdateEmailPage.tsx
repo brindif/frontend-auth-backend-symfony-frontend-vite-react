@@ -76,8 +76,4 @@ export function UpdateEmailPage() {
       </Space>
     </Form>
   );
-  return <AuthPage
-    type="forgotPassword"
-    title={false}
-    formProps={{onFinish: onFinish}} />;
 }

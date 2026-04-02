@@ -21,7 +21,7 @@ type Props = {
   element: ContentType;
 };
 
-export function ContentForm ({ index, element }: Props) {
+export function ElementForm ({ index, element }: Props) {
   const queryCache = useQueryClient();
   const t = useTranslate();
   const navigate = useNavigate();
