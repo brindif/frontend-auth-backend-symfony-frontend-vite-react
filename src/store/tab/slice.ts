@@ -30,7 +30,7 @@ export enum MethodType {
 }
 
 export enum ElementType {
-  NOTE = 'note',
+  NOTE = 'notes',
   SCHEMA = 'schema',
 }
 
@@ -41,6 +41,7 @@ export type ContentType = {
   put: string;
   patch: string;
   post: string;
+  delete: string;
   values?: Record<string, any>;
   updated?: boolean;
   loaded?: boolean;

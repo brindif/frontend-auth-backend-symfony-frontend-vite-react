@@ -4,7 +4,7 @@ import { useAppSelector } from "../../store/hooks";
 import type { RootState } from "../../store/store";
 import { App, Form, Typography, Button, Flex, Tag } from "antd";
 import { FormItemsFromSchema } from "../generator/FormItemsFromSchema";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { setContents } from "../../store/tab/slice";
 import { DeleteOutlined, SaveOutlined, EditOutlined } from "@ant-design/icons";
@@ -30,21 +30,16 @@ export function ElementForm ({ index, element }: Props) {
   const { form } = useForm();
 
   // Initialize form field
-  const getPath = (method:string|undefined = undefined) => {
-    switch (method ?? element.method) {
-      case MethodType.POST: return `/api${element.post}`;
-      case MethodType.PUT: return `/api${element.put}`;
-      case MethodType.PATCH: return `/api${element.patch}`;
-      default: return '';
-    }
-  };
-  const fullSchema = useAppSelector((state: RootState) => selectSchema(state, getPath(), element.method));
-  const content = fullSchema ? (
-    <FormItemsFromSchema 
+  const fullSchema = useAppSelector(
+    (state: RootState) => selectSchema(state, `/api${element[element.method]}`, element.method)
+  );
+  const content = useMemo(() => 
+    fullSchema ? <FormItemsFromSchema 
       schema={fullSchema} 
       form={`${element.type}-${index}`}
-    />
-  ) : null;
+    /> : null,
+    [fullSchema]
+  );
 
   // Initialize form values
   useEffect(() => {
@@ -54,7 +49,7 @@ export function ElementForm ({ index, element }: Props) {
 
   // Initialize for Patch method
   const [tags, setTags] = useState<null|Record<string, string>>(null);
-  const tagsSchema = useAppSelector((state: RootState) => selectSchema(state, getPath(MethodType.PUT), MethodType.PUT));
+  const tagsSchema = useAppSelector((state: RootState) => selectSchema(state, `/api${element.put}`, MethodType.PUT));
   useEffect(() => {
     if (element.method === MethodType.PATCH && tagsSchema) {
       setTags(Object.keys(tagsSchema.properties).reduce((acc, attr) => {

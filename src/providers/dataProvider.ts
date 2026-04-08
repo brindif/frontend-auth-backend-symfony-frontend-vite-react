@@ -11,10 +11,17 @@ type Params = {
   pagination?: { currentPage?: number; pageSize?: number };
 };
 
-const buildQuery = ({ pagination }: Params) => {
+const buildQuery = ({ pagination, sorters, filters }: Params) => {
   const query: Record<string, any> = {};
   if (pagination?.currentPage) query.page = pagination.currentPage;
   if (pagination?.pageSize) query.itemsPerPage = pagination.pageSize;
+  if (filters && filters.length > 0) {
+    for (const filter of filters) {
+      if ('field' in filter && filter.operator === 'eq') {
+        query[filter.field] = filter.value;
+      }
+    }
+  }
   return query;
 };
 
